@@ -1,9 +1,11 @@
 from django import forms
-from .models import Profile
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from django.core.files.images import get_image_dimensions
-from .models import *
+
+from .models import InstantGenerator, Paraphrase, Profile
+
+User = get_user_model()
 
 
 class InstantGeneratorForm(forms.ModelForm):
@@ -14,7 +16,13 @@ class InstantGeneratorForm(forms.ModelForm):
                   'Give_a_Guarantee', 'Inject_Scarcity', 'Call_to_action', 'Give_a_Warning', 'Close_with_a_Reminder')
 
 
-class UserForm(UserCreationForm):
+class SignUpForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+
+
+class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
@@ -25,38 +33,29 @@ class ProfileForm(forms.ModelForm):
         model = Profile
         fields = ('avatar',)
 
-        def clean_avatar(self):
-            avatar = self.cleaned_data['avatar']
-
-            try:
-                w, h = get_image_dimensions(avatar)
-
-                # validate dimensions
-                max_width = max_height = 100
-                if w > max_width or h > max_height:
-                    raise forms.ValidationError(
-                        u'Please use an image that is '
-                        '%s x %s pixels or smaller.' % (max_width, max_height))
-
-                # validate content type
-                main, sub = avatar.content_type.split('/')
-                if not (main == 'image' and sub in ['jpeg', 'pjpeg', 'gif', 'png']):
-                    raise forms.ValidationError(u'Please use a JPEG, '
-                                                'GIF or PNG image.')
-
-                # validate file size
-                if len(avatar) > (20 * 1024):
-                    raise forms.ValidationError(
-                        u'Avatar file size may not exceed 20k.')
-
-            except AttributeError:
-                """
-                Handles case when we are updating the user profile
-                and do not supply a new avatar
-                """
-                pass
-
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get('avatar')
+        if not avatar:
             return avatar
+        if not hasattr(avatar, 'content_type'):
+            return avatar
+
+        w, h = get_image_dimensions(avatar)
+
+        max_width = max_height = 100
+        if w > max_width or h > max_height:
+            raise forms.ValidationError(
+                'Please use an image that is %s x %s pixels or smaller.' % (max_width, max_height)
+            )
+
+        main, sub = avatar.content_type.split('/')
+        if not (main == 'image' and sub in ['jpeg', 'pjpeg', 'gif', 'png']):
+            raise forms.ValidationError('Please use a JPEG, GIF or PNG image.')
+
+        if len(avatar) > (20 * 1024):
+            raise forms.ValidationError('Avatar file size may not exceed 20k.')
+
+        return avatar
 
 
 class ParaphraseForm(forms.ModelForm):
