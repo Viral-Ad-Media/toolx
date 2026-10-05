@@ -127,6 +127,7 @@ a:hover{
 }
 .avatar{
     max-width: 2em;
+    max-height: 2em;
     border: 4px solid #ED4D47;
 }
 footer{
