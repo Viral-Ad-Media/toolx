@@ -138,3 +138,7 @@ node_modules
 mysite.log
 XDG_CACHE_HOME
 !.python-version
+
+# Private uploads and platform artifacts
+media/
+.DS_Store

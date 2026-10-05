@@ -7,13 +7,14 @@
     <div class="row" style="height: 100vh;">
        <div class="col-sm-6 blue-bg text-center">
            <a class="navbar-brand" href="/">
-               <img src="{% static '/img/logo-large.png' %}" alt="logo" class="img-fluid mt-5 pt-5">
+               <img src="{% static 'img/logo-large.png' %}" alt="logo" class="img-fluid mt-5 pt-5">
            </a>
       </div>
       <div class="col-sm-6 p-5">
           <h2>Sign Up</h2>
           <form method="post" >
           {% csrf_token %}
+          {{ form.non_field_errors }}
           {{ form.username|as_crispy_field }}
           {{ form.email|as_crispy_field }}
 

@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %} Create paraphrase {% endblock %}
+{% block title %} Article draft {% endblock %}
 {% block content %}
 
 
 <div class="row" >
     <div class="col sticky-top side-nav d-none d-lg-block">
         <a href="/">
-          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
         </a>
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
     <div class="col-8 mt-5 pl-5">
-        <h4 class="pt-5"><b>Fill out the form below to to paraphrase</b></h4>
+        <h4 class="pt-5"><b>Fill out the form below to to article draft</b></h4>
         <form method="post">
             {% csrf_token %}
             <div class="pt-5">

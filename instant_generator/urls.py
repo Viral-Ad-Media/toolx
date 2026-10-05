@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('activation_resend/', views.activation_resend, name='activation_resend'),
+    path('draft/edit/<int:pk>/', views.edit_draft, name='edit_draft'),
     path('signup/', views.signup, name='signup'),
     path('profile/', views.profile, name='profile'),
     path('profile/edit', views.edit_profile, name='edit-profile'),

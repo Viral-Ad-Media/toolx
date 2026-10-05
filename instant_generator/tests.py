@@ -58,10 +58,10 @@ class InstantGeneratorViewTests(TestCase):
 
 class ProfileUpdateTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='alice', password='strong-pass-3')
+        self.user = User.objects.create_user(username='alice', password='strong-pass-3', email='original@example.com')
 
     def test_edit_profile_updates_user_and_avatar(self):
-        self.client.login(username='alice', password='strong-pass-3')
+        self.client.login(username='alice', password='strong-pass-3', email='original@example.com')
         avatar = SimpleUploadedFile(
             'avatar.gif',
             (
@@ -87,7 +87,7 @@ class ProfileUpdateTests(TestCase):
 
         self.user.refresh_from_db()
         self.assertEqual(self.user.username, 'alice-updated')
-        self.assertEqual(self.user.email, 'alice@example.com')
+        self.assertEqual(self.user.email, 'original@example.com')
         self.assertEqual(self.user.first_name, 'Alice')
         self.assertEqual(self.user.last_name, 'Updated')
 

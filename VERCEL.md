@@ -1,20 +1,7 @@
-## Deploying on Vercel
+# Vercel deployment
 
-### 1) Prerequisites
-- Push this repo to GitHub/GitLab/Bitbucket.
-- Create a Vercel project from the repo.
+Use Python 3.12, the pinned requirements, and `api/wsgi.py` as the WSGI entry point. `vercel.json` collects static assets and routes requests to Django.
 
-### 2) Required Environment Variables
-- `SECRET_KEY`: a long random Django secret.
-- `DEBUG`: `False`
-- `ALLOWED_HOSTS`: `.vercel.app,<your-custom-domain>`
-- `CSRF_TRUSTED_ORIGINS`: `<your-vercel-domain>,<your-custom-domain>`
-- `DATABASE_URL`: recommended (Vercel Postgres or any managed Postgres URL).
+Configure every production variable documented in README.md **before building**. Production requires PostgreSQL, SMTP, a strong signing key, exact allowed hosts, a canonical HTTPS origin, and persistent S3 media storage. Debug/SQLite/local uploads are not a production fallback.
 
-### 3) Database Note
-- SQLite on Vercel is not suitable for persistent writes.
-- Use Postgres in production (`DATABASE_URL`).
-
-### 4) Deploy
-- `vercel` (preview)
-- `vercel --prod` (production)
+Apply database migrations in a controlled release job before serving traffic. Verify actual SMTP delivery, activation, upload persistence, and owner-only exports against a staging environment. This repository does not create a database, bucket, or hosting account automatically.
