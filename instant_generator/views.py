@@ -27,7 +27,7 @@ def signup(request):
             user.is_active = True
             user.save()
             current_site = get_current_site(request)
-            subject = 'Activate Your Raodoh Account'
+            subject = 'Activate Your Tool-X Account'
             message = render_to_string('registration/activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
