@@ -12,5 +12,4 @@ urlpatterns = [
     path('congratulation/', views.congratulation, name='congratulation'),
     path('my_adcopies', views.my_adcopies, name='my_adcopies'),
     path('preview/<int:pk>', views.preview, name='preview'),
-    path('download/', views.download, name='download')
 ]

@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login, authenticate
@@ -13,15 +13,12 @@ from django.db import transaction
 
 from io import BytesIO
 from reportlab.pdfgen import canvas
-from django.http import HttpResponse
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.lib.pagesizes import A4
+from django.http import HttpResponse, response
 
-from django.core.files.storage import FileSystemStorage
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import inch
+from reportlab.lib.units import mm, inch
 
 
 # Create your views here.
@@ -139,54 +136,87 @@ def my_adcopies(request):
 def preview(request, pk):
     generated = InstantGenerator.objects.get(pk=pk)
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
+    response['Content-Disposition'] = 'inline; filename="Sales Letter.pdf"'
 
-    buffer = BytesIO()
-    p = canvas.Canvas(buffer)
+    pdf_buffer = BytesIO()
+    # pagesize = (140 * mm, 216 * mm)  # width, height
+    my_doc = SimpleDocTemplate(
+        pdf_buffer,
+        # pagesize=pagesize
+    )
 
-    # Start writing the PDF here
-    p.drawString(200, 800, generated.Get_Attention)
-    p.drawString(30, 750, generated.Identify_the_Problem_Your_Audience_Have)
-    p.drawString(30, 720, generated.Provide_the_Solution)
-    p.drawString(30, 660, generated.Present_your_Credentials)
-    p.drawString(30, 650, generated.Show_the_Benefits)
-    p.drawString(30, 640, generated.Give_Social_Proof)
-    p.drawString(30, 630, generated.Make_Your_Offer)
-    p.drawString(30, 620, generated.Give_a_Guarantee)
-    p.drawString(30, 610, generated.Inject_Scarcity)
-    p.drawString(30, 600, generated.Call_to_action)
-    p.drawString(30, 590, generated.Give_a_Warning)
-    p.drawString(30, 560, generated.Close_with_a_Reminder)
-    # End writing
+    flowables = []
+    my_doc.build(flowables)
+    sample_style_sheet = getSampleStyleSheet()
+    # sample_style_sheet.list()
 
-    p.showPage()
-    p.save()
+    paragraph_1 = Paragraph(generated.Get_Attention, sample_style_sheet['Title'])
+    paragraph_2 = Paragraph(
+        generated.Identify_the_Problem_Your_Audience_Have,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_3 = Paragraph(
+        generated.Provide_the_Solution,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_4 = Paragraph(
+        generated.Present_your_Credentials,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_5 = Paragraph(
+        generated.Show_the_Benefits,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_6 = Paragraph(
+        generated.Give_Social_Proof,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_7 = Paragraph(
+        generated.Make_Your_Offer,
+        sample_style_sheet['Heading4']
+    )
+    paragraph_8 = Paragraph(
+        generated.Give_a_Guarantee,
+        sample_style_sheet['Italic']
+    )
+    paragraph_9 = Paragraph(
+        generated.Inject_Scarcity,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_10 = Paragraph(
+        generated.Call_to_action,
+        sample_style_sheet['Heading3']
+    )
+    paragraph_11 = Paragraph(
+        generated.Give_a_Warning,
+        sample_style_sheet['BodyText']
+    )
+    paragraph_12 = Paragraph(
+        generated.Close_with_a_Reminder,
+        sample_style_sheet['Heading4']
+    )
 
-    pdf = buffer.getvalue()
-    buffer.close()
+    flowables.append(paragraph_1)
+    flowables.append(paragraph_2)
+    flowables.append(paragraph_3)
+    flowables.append(paragraph_4)
+    flowables.append(paragraph_5)
+    flowables.append(paragraph_6)
+    flowables.append(paragraph_7)
+    flowables.append(paragraph_8)
+    flowables.append(paragraph_9)
+    flowables.append(paragraph_10)
+    flowables.append(paragraph_11)
+    flowables.append(paragraph_12)
+
+    my_doc.build(flowables)
+
+    pdf = pdf_buffer.getvalue()
+    pdf_buffer.close()
     response.write(pdf)
 
     return response
 
-    # return render(request, 'instant_generator/preview.html', {'generated': generated})
 
 
-def download(request):
-    doc = SimpleDocTemplate("/tmp/somefilename.pdf")
-    styles = getSampleStyleSheet()
-    Story = [Spacer(1,2*inch)]
-    style = styles["Normal"]
-    for i in range(100):
-       bogustext = ("This is Paragraph number %s.  " % i) * 20
-       p = Paragraph(bogustext, style)
-       Story.append(p)
-       Story.append(Spacer(1,0.2*inch))
-    doc.build(Story)
 
-    fs = FileSystemStorage("/tmp")
-    with fs.open("somefilename.pdf") as pdf:
-        response = HttpResponse(pdf, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
-        return response
-
-    return response
