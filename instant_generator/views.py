@@ -102,7 +102,7 @@ def create(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            return redirect('.congratulation')
+            return redirect('congratulation')
 
     else:
         form = InstantGeneratorForm()
@@ -115,9 +115,19 @@ def congratulation(request):
     return render(request, 'instant_generator/congratulation.html', {})
 
 
-def preview(request):
+def my_adcopies(request):
+    adcopies = InstantGenerator.objects.all().order_by('-created_on')
+    context = {
+        "adcopies": adcopies,
+    }
 
-    return render(request, 'instant_generator/preview.html', {})
+    return render(request, 'instant_generator/my_adcopies.html', context)
+
+
+def preview(request, pk):
+    generated = InstantGenerator.objects.get(pk=pk)
+
+    return render(request, 'instant_generator/preview.html', {'generated': generated})
 
 
 def download(request):

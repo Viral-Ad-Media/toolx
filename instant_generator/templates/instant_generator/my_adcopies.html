@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} My Adcopies {% endblock %}
+{% block content %}
+
+
+
+
+<div class="row" >
+    <div class="col side-nav">
+        <a href="/">
+          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+        </a>
+        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
+    </div>
+
+    <div class="col-10 my-auto text-center">
+
+            <div class="row">
+                {% for adcopy in adcopies %}
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <div style = "background: #ffffff; width: 350px;  height: 200px;  box-shadow: 0px 4px 12px #F0F0F0; border-radius: 6px 6px 0px 0px; padding: 20px;">
+                            <h5><a href="{% url 'preview' adcopy.pk%}" style="color: #000">{{ adcopy.Get_Attention | slice:":24"}}...</a></h5>
+                            <p style = "text-align: justify;"> {{ adcopy.Identify_the_Problem_Your_Audience_Have | slice:":150" }}...</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -7,24 +7,24 @@ User = get_user_model()
 
 
 # Create your models here.
-class Question(models.Model):
-    question_no = models.IntegerField(default=0)
-    question_name = models.CharField(max_length=20, unique=True, default=' ')
-    question_text = models.TextField(blank=True, max_length=100)
-
-    def __str__(self):
-        return str(self.question_name)
-
-    class Meta:
-        ordering = ["question_no"]
-
-
-class Answer(models.Model):
-    question_relation = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.answer
+# class Question(models.Model):
+#     question_no = models.IntegerField(default=0)
+#     question_name = models.CharField(max_length=20, unique=True, default=' ')
+#     question_text = models.TextField(blank=True, max_length=100)
+#
+#     def __str__(self):
+#         return str(self.question_name)
+#
+#     class Meta:
+#         ordering = ["question_no"]
+#
+#
+# class Answer(models.Model):
+#     question_relation = models.ForeignKey(Question, on_delete=models.CASCADE)
+#     answer = models.CharField(max_length=100, unique=True)
+#
+#     def __str__(self):
+#         return self.answer
 
 
 class InstantGenerator(models.Model):
@@ -51,7 +51,7 @@ class InstantGenerator(models.Model):
         )
 
     def __str__(self):
-        return f'{self.user.username} fundrequest'
+        return f'{self.user.username}'
 
 
 class Profile(models.Model):

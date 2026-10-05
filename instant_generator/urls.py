@@ -10,6 +10,7 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('create/', views.create, name='create'),
     path('congratulation/', views.congratulation, name='congratulation'),
-    path('preview/', views.preview, name='preview'),
+    path('my_adcopies', views.my_adcopies, name='my_adcopies'),
+    path('preview/<int:pk>', views.preview, name='preview'),
     path('download/', views.download, name='download')
 ]
