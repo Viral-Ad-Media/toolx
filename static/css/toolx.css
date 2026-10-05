@@ -125,6 +125,10 @@ a:hover{
     border-color:  #242732;
     color: #FFFFFF;
 }
+.avatar{
+    max-width: 2em;
+    border: 4px solid #ED4D47;
+}
 footer{
     background: #333748;
     color: #FFFFFF;
@@ -137,7 +141,6 @@ footer .footer-copyright{
     background: rgba(0, 0, 0, 0.25);
     border-radius: 0px;
 }
-
 
 .sidebar-form input.form-control {
     border: none !important;

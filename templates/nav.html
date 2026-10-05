@@ -22,31 +22,21 @@
            {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                         <img class="rounded-circle"  src="{{ profile.avatar.url }}" style="max-width: 2em; margin-right: 10px;">{{ user.username }}
+                         <img class="avatar rounded-circle mr-2" src="{{ user.profile.avatar.url  }}">{{ user.username }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="/profile">Profile</a>
                         <a class="dropdown-item" href="/logout">Logout</a>
                     </div>
                 </li>
-
-                        {% else %}
-
-                        <li class="nav-item">
-                          <a class="nav-link" href="/login"><b>Login</b></a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/signup" ><button type="button" class=" xbtn-primary btn btn-primary">Sign Up Free</button></a>
-                        </li>
-
-
-                    {% endif %}
-
-
-
-
-
-
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="/login"><b>Login</b></a>
+                </li>
+                <li class="nav-item">
+                    <a href="/signup" ><button type="button" class=" xbtn-primary btn btn-primary">Sign Up Free</button></a>
+                </li>
+           {% endif %}
 
       </ul>
     </div>

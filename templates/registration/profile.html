@@ -9,11 +9,11 @@
 {% block nav %} {% include 'nav.html' %} {% endblock nav %}
 </header>
 
-<div class="container bg-white profilecontainer" style="margin-top: 7rem">
+<div class="container bg-white" style="margin-top: 7rem">
     <div class="row text-center">     
         <div class="col-lg-12">
             <div class="mt-5 mb-5">
-
+                <img class="avatar rounded-circle" src={{ user.profile.avatar.url }} alt="pic">
             </div>
             <h2 class="">Profile</h2>
                 <div class="container mt-5">
