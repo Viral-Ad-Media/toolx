@@ -13,12 +13,46 @@
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
 
-    <div class="col-10 my-auto text-center">
-        <h3> Welcome {{ user.username }}</h3>
-        <p class="pb-5">Start generating Adcopies</p>
-        <a href="/create" >
-            <button type="button" class=" xbtn-primary btn btn-primary px-5 py-2">Create AdCopies</button>
-        </a>
+    <div class="col-10 my-auto">
+         <h3> Welcome {{ user.username }}</h3>
+         <div class="mt-5 ml-4">
+            <h4 >All Adcopies </h4>
+            <a href="/my_adcopies"><p class="float-right">View all</p></a>
+
+             <div class="row mt-3">
+                {% for adcopy in adcopies %}
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
+                        <div class="my_adcopies card p-3 clearfix">
+                            <h5>{{ adcopy.Get_Attention}}</h5>
+                            <p> {{ adcopy.created_on.date }}</p>
+
+                            <div class="btn-group">
+                                 <a href="{% url 'preview' adcopy.pk%}"><button class="card-xbtn btn-primary btn-md center-block">Preview</button></a>
+                                 <a href="{% url 'pdf' adcopy.pk%}" target="_blank"><button class="card-xbtn btn-primary btn-md center-block">Pdf</button></a>
+                                 <a href="{% url 'docx' adcopy.pk%}" target="_blank"><button class="card-xbtn btn-primary btn-md center-block">Docx</button></a>
+                             </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+         </div>
+
+         <div class="mt-5 ml-4">
+            <h4>All Paraphrase </h4>
+            <a href="/paraphrase"><p class="float-right">View all</p></a>
+            <div class="row mt-3    ">
+                {% for  paraphrase in  my_paraphrase %}
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
+                        <div class="my_adcopies card p-3 clearfix">
+                            <a href="{% url 'paraphrase_preview' paraphrase.pk%}">
+                                <h5>{{ paraphrase.Title}}</h5>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+         </div>
     </div>
 </div>
 

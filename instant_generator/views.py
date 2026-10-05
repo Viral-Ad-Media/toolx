@@ -24,6 +24,9 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import mm, inch
 
 
+import requests
+
+
 # Create your views here.
 def signup(request):
     if request.method == 'POST':
@@ -104,8 +107,14 @@ def edit_profile(request):
 
 @login_required
 def dashboard(request):
+    adcopies = InstantGenerator.objects.filter(user=request.user).order_by('-created_on')
+    my_paraphrase = Paraphrase.objects.filter(user=request.user).order_by('-created_on')
+    context = {
+        "adcopies": adcopies,
+        "my_paraphrase": my_paraphrase,
+    }
 
-    return render(request, 'instant_generator/dashboard.html', {})
+    return render(request, 'instant_generator/dashboard.html', context)
 
 
 @login_required
@@ -126,13 +135,8 @@ def create(request):
 
 
 @login_required
-def congratulation(request):
-
-    return render(request, 'instant_generator/congratulation.html', {})
-
-
-@login_required
-def paraphrase(request):
+@transaction.atomic
+def create_paraphrase(request):
     if request.method == 'POST':
         form = ParaphraseForm(request.POST)
         if form.is_valid():
@@ -145,7 +149,23 @@ def paraphrase(request):
         form = ParaphraseForm()
 
     context = {
-        'form': form
+        'form': form,
+    }
+
+    return render(request, 'instant_generator/create_paraphrase.html', context)
+
+
+@login_required
+def congratulation(request):
+
+    return render(request, 'instant_generator/congratulation.html', {})
+
+
+@login_required
+def paraphrase(request):
+    my_paraphrase = Paraphrase.objects.filter(user=request.user).order_by('-created_on')
+    context = {
+        "my_paraphrase": my_paraphrase,
     }
 
     return render(request, 'instant_generator/paraphrase.html', context)
@@ -168,6 +188,26 @@ def preview(request, pk):
     }
 
     return render(request, 'instant_generator/preview.html', context)
+
+
+def paraphrase_preview(request, pk):
+    url = "https://rapidapi.p.rapidapi.com/paraphrase"
+
+    payload = "{ \t\"text\": \"Researchers in the field of HCI both observe the ways in which humans interact with computers and design technologies that let humans interact with computers in novel ways. Humans interact with computers in many ways; the interface between humans and computers is crucial to facilitating this interaction.\", \t\"numParaphrases\": 1, \t\"coupon\": \"IJg98DCuPqGuit7BrGXKaWsoqOUz0DYV\", \t\"includeSegs\": true, \t\"strength\": 3, \t\"autoflip\": 0.25}"
+    headers = {'content-type': "application/json", 'x-rapidapi-host': "quillbot.p.rapidapi.com", 'x-rapidapi-key': "09903226eemshfe7b329080240cfp1f357fjsnf601dfcc12dd"}
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+
+    print(response.text)
+
+    # original = Paraphrase.objects.get(pk=pk)
+    # generated = Paraphrase.objects.get(pk=pk)
+    # context = {
+    #     "original": original,
+    #     "generated": generated,
+    # }
+
+    return render(request, 'instant_generator/paraphrase_preview.html', context)
 
 
 def pdf(request, pk):

@@ -13,27 +13,30 @@
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
 
-    <div class="col-5 mt-5 pl-5">
-        <h4 class="pt-5"><b>Fill out the form below to to paraphrase</b></h4>
-        <form method="post">
-            {% csrf_token %}
-            <div class="pt-5">
-                {{ form.Title|as_crispy_field }}
+    <div class="col-10 mt-5 ml-4">
+        <h4> My Paraphrase </h4>
+
+            <div class="row mt-5">
+                {% for  paraphrase in  my_paraphrase %}
+                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
+                        <div class="my_adcopies card p-3 clearfix">
+                            <a href="{% url 'paraphrase_preview' paraphrase.pk%}">
+                                <h5>{{ paraphrase.Title}}</h5>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="pt-3">
-                {{ form.Article|as_crispy_field }}
-            </div>
-            <div class="pt-5 pb-5">
-                <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Submit</button>
-            </div>
-         </form>
 
     </div>
-    <div class="col-5 mt-5 ">
-        <h4 class="pt-5"><b>Fill out the form below to to paraphrase</b></h4>
-        <h5 class="pt-5">Paraphased Title</h5>
-        <p class="pt-5">Paraphrase article Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. In metus vulputate eu scelerisque felis imperdiet proin. Elementum nisi quis eleifend quam adipiscing. Arcu bibendum at varius vel pharetra. Ornare lectus sit amet est placerat in egestas. Lobortis elementum nibh tellus molestie nunc non blandit massa enim. Etiam erat velit scelerisque in dictum non consectetur. Id porta nibh venenatis cras. Tellus molestie nunc non blandit massa enim. Elementum facilisis leo vel fringilla est ullamcorper eget. Etiam tempor orci eu lobortis elementum. Sed euismod nisi porta lorem mollis aliquam ut porttitor leo. Sit amet purus gravida quis blandit turpis.</p>
 
+
+    <div class="col-5 mt-5 ">
+        <h5 class="pt-5">Paraphased Title</h5>
+        <h5>{{ my_paraphrase.Title}}</h5>
+        <div class="pt-5 pb-5">
+            <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Submit</button>
+        </div>
     </div>
 
 

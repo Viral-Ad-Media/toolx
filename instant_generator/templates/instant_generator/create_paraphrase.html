@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Create paraphrase {% endblock %}
+{% block content %}
+
+
+<div class="row" >
+    <div class="col sticky-top side-nav d-none d-lg-block">
+        <a href="/">
+          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+        </a>
+        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
+    </div>
+    <div class="col-8 mt-5 pl-5">
+        <h4 class="pt-5"><b>Fill out the form below to to paraphrase</b></h4>
+        <form method="post">
+            {% csrf_token %}
+            <div class="pt-5">
+                {{ form.Title|as_crispy_field }}
+            </div>
+            <div class="pt-3">
+                {{ form.Article|as_crispy_field }}
+            </div>
+            <div class="pt-5 pb-5">
+                <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Submit</button>
+            </div>
+         </form>
+    </div>
+</div>
+
+{% endblock %}
+
+
