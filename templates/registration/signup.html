@@ -17,6 +17,16 @@
           {{ form.username|as_crispy_field }}
           {{ form.email|as_crispy_field }}
 
+
+          <div class="row">
+              <div class="col-md-6 passwordfirst">
+                 {{ form.first_name|as_crispy_field }}
+              </div>
+              <div class="col-md-6 confirmpassword">
+                {{ form.last_name|as_crispy_field }}
+              </div>
+          </div>
+
           <div class="row">
               <div class="col-md-6 passwordfirst">
                 {{ form.password1|as_crispy_field }}
