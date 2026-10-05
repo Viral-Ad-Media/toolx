@@ -14,6 +14,8 @@ import os
 
 import dj_database_url
 from decouple import Csv, config
+from django.core.exceptions import ImproperlyConfigured
+from urllib.parse import urlparse
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
@@ -23,17 +25,34 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static')
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='insecure-development-key')
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
-
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,.vercel.app', cast=Csv())
-CSRF_TRUSTED_ORIGINS = [
-    origin for origin in config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv()) if origin
-]
+SECRET_KEY = config('SECRET_KEY', default='')
+if DEBUG and not SECRET_KEY:
+    SECRET_KEY = 'local-development-only-never-use-this-secret-in-production'
+if not DEBUG and (len(SECRET_KEY) < 50 or len(set(SECRET_KEY)) < 5 or SECRET_KEY.startswith(('insecure-', 'local-development-', 'django-insecure-'))):
+    raise ImproperlyConfigured('Set a strong SECRET_KEY of at least 50 characters for production.')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1' if DEBUG else '', cast=Csv())
+if not DEBUG and (not ALLOWED_HOSTS or '*' in ALLOWED_HOSTS or '.vercel.app' in ALLOWED_HOSTS):
+    raise ImproperlyConfigured('Set ALLOWED_HOSTS to the exact deployment hostnames.')
+PUBLIC_ORIGIN = config('PUBLIC_ORIGIN', default='http://localhost:8000' if DEBUG else '').rstrip('/')
+origin = urlparse(PUBLIC_ORIGIN)
+if origin.scheme not in ('http', 'https') or not origin.hostname or origin.path or origin.query or origin.fragment or origin.username or origin.password or (not DEBUG and origin.scheme != 'https'):
+    raise ImproperlyConfigured('PUBLIC_ORIGIN must be the HTTPS origin of your production site.')
+CSRF_TRUSTED_ORIGINS = [PUBLIC_ORIGIN]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
+SECURE_SSL_REDIRECT = not DEBUG
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = False
+SECURE_HSTS_PRELOAD = False
+# This app cannot assert HTTPS ownership of sibling subdomains or opt into browser preload.
+SILENCED_SYSTEM_CHECKS = ['security.W005', 'security.W021']
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+DATA_UPLOAD_MAX_MEMORY_SIZE = 256 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 64 * 1024
+PASSWORD_RESET_TIMEOUT = 3600
+EMAIL_TIMEOUT = 10
 
 # Application definition
 
@@ -45,8 +64,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'crispy_bootstrap4',
+    'storages',
     'tinymce',
-    'django_social_share',
     'instant_generator',
 ]
 
@@ -58,6 +78,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'instant_generator.middleware.RateLimitMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -94,7 +115,11 @@ DATABASES = {
 }
 
 DATABASE_URL = config('DATABASE_URL', default='')
+if not DEBUG and not DATABASE_URL:
+    raise ImproperlyConfigured('DATABASE_URL is required for production; SQLite is development-only.')
 if DATABASE_URL:
+    if not DEBUG and urlparse(DATABASE_URL).scheme not in ('postgres', 'postgresql'):
+        raise ImproperlyConfigured('Use PostgreSQL for production.')
     DATABASES['default'] = dj_database_url.parse(
         DATABASE_URL,
         conn_max_age=600,
@@ -130,8 +155,6 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_L10N = True
-
 USE_TZ = True
 
 
@@ -140,7 +163,10 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+}
 WHITENOISE_USE_FINDERS = True
 
 # Extra places for collectstatic to find static files.
@@ -151,6 +177,19 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+if not DEBUG:
+    AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME', default='')
+    AWS_S3_REGION_NAME = config('AWS_S3_REGION_NAME', default='')
+    if not AWS_STORAGE_BUCKET_NAME or not AWS_S3_REGION_NAME:
+        raise ImproperlyConfigured('Set AWS_STORAGE_BUCKET_NAME and AWS_S3_REGION_NAME for persistent media.')
+    AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default=None)
+    AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default=None)
+    AWS_S3_ENDPOINT_URL = config('AWS_S3_ENDPOINT_URL', default=None)
+    AWS_DEFAULT_ACL = None
+    AWS_QUERYSTRING_AUTH = True
+    AWS_S3_FILE_OVERWRITE = False
+    STORAGES['default'] = {'BACKEND': 'storages.backends.s3.S3Storage'}
+CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 
 # Django Crispyform settings
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -169,16 +208,24 @@ LOGOUT_REDIRECT_URL = config('LOGOUT_REDIRECT_URL', default='/')
 # # EMAIL_BACKEND production config (Gmail)
 EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
 EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+if not DEBUG and (EMAIL_BACKEND != 'django.core.mail.backends.smtp.EmailBackend' or EMAIL_HOST == 'localhost'):
+    raise ImproperlyConfigured('Configure an SMTP mail backend and EMAIL_HOST for production activation emails.')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
 EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=not DEBUG, cast=bool)
 EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
+if EMAIL_USE_TLS and EMAIL_USE_SSL:
+    raise ImproperlyConfigured('Use either EMAIL_USE_TLS or EMAIL_USE_SSL, not both.')
+if not DEBUG and not (EMAIL_USE_TLS or EMAIL_USE_SSL):
+    raise ImproperlyConfigured('Production SMTP must use TLS or SSL.')
 
 
 # OTHER EMAIL SETTINGS #
 ########################
 ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@example.com')
 SUPPORT_EMAIL = config('SUPPORT_EMAIL', default='support@example.com')
+if not DEBUG and (not ADMIN_EMAIL or ADMIN_EMAIL == 'admin@example.com'):
+    raise ImproperlyConfigured('Set ADMIN_EMAIL to your verified production sender.')
 DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL

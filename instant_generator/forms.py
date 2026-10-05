@@ -17,12 +17,23 @@ class InstantGeneratorForm(forms.ModelForm):
 
 
 class SignUpForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+
+    def clean_email(self):
+        email = self.cleaned_data['email'].strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
+            raise forms.ValidationError('An account already uses this email address.')
+        return email
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
 
 
 class UserForm(forms.ModelForm):
+    # Changing the confirmed destination requires a separate verification flow.
+    email = forms.EmailField(disabled=True, required=False, help_text='Email changes are currently unavailable.')
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name')
@@ -48,7 +59,7 @@ class ProfileForm(forms.ModelForm):
                 'Please use an image that is %s x %s pixels or smaller.' % (max_width, max_height)
             )
 
-        main, sub = avatar.content_type.split('/')
+        main, _, sub = avatar.content_type.partition('/')
         if not (main == 'image' and sub in ['jpeg', 'pjpeg', 'gif', 'png']):
             raise forms.ValidationError('Please use a JPEG, GIF or PNG image.')
 
@@ -62,3 +73,7 @@ class ParaphraseForm(forms.ModelForm):
     class Meta:
         model = Paraphrase
         fields = ('Title', 'Article',)
+
+
+class ActivationResendForm(forms.Form):
+    email = forms.EmailField()

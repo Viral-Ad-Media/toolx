@@ -1,13 +1,11 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils import six
 
 
 class TokenGenerator(PasswordResetTokenGenerator):
+    key_salt = 'toolx.account_activation.v2'
+
     def _make_hash_value(self, user, timestamp):
-        return (
-            six.text_type(user.pk) + six.text_type(timestamp) +
-            six.text_type(user.username)
-        )
+        return f'{super()._make_hash_value(user, timestamp)}:{user.is_active}:{user.profile.activation_pending}:{user.profile.email_confirmed}'
 
 
 account_activation_token = TokenGenerator()
