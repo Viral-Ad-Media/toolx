@@ -1,6 +1,60 @@
 body{
     background: #FEF8F5;
 }
+a {
+    color: #F37753;
+}
+a:hover{
+    color: #FFFFFF;
+}
+.navbar {
+    /* background-color: #ff5500 !important; */
+    background: #242732 !important;
+}
+.hero{
+    background: #333748;
+    color: #FEF8F5;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.xbtn-primary{
+    background: #F37753;
+    border-radius: 3px;
+    border: 1px solid #F37753;
+    color: #FFFFFF;
+}
+.xbtn-primary:hover{
+    background: #FFFFFF;
+    border-radius: 3px;
+    border: 1px solid #FFFFFF;
+    color: #242732;
+}
+
+.xbtn-white{
+    background: #FFFFFF;
+    border-radius: 3px;
+    border: 1px solid #FFFFFF;
+    color: #242732;
+}
+.xbtn-white:hover{
+    background: #F37753 ;
+    border-radius: 3px;
+    border: 1px solid #F37753;
+    color: #FFFFFF;
+}
+
+
+.cta{
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.capBg{
+    background: #FCDDD4;
+}
+.vl {
+    border-left: 10px solid #ED4D47;
+    height: 160px;
+}
 
 footer{
     background: #333748;
