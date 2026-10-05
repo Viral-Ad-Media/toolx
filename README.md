@@ -52,9 +52,27 @@ Back up an existing database, install the locked dependencies, run `python manag
 
 Production uploads and real SMTP delivery need end-to-end verification with your actual credentials. No ToolX service was found in the inspected Render workspace; this patch does not provision or deploy one.
 
-## Public database incident follow-up
+## Public database incident and history cleanup
 
-The earlier revision committed a populated database. This change removes it and private media from the branch, but previous commits and downloaded copies remain. Determine whether the exposed identities/passwords are used anywhere else, reset affected active credentials, invalidate relevant sessions, and rotate any exposed historical signing/email secrets. Do not use the old database to seed a new deployment. Coordinate repository-history cleanup separately; do not force-push shared history casually. Deleting a file does not revoke credentials.
+On 2026-10-05, the histories of `master` and `fix/toolx-audit` were rewritten to remove the previously committed database, private uploads, compiled Python caches, and local editor metadata. Historical Django signing and TinyMCE API keys were redacted. All 50 commits were rebuilt with the same parent relationships; the application files at both branch tips were unchanged by the rewrite. Original authors and author dates are retained in `Original-Author` and `Original-Author-Date` message trailers; native author/committer fields and commit IDs changed during publishing.
+
+### Existing clones and forks
+
+Save any uncommitted work outside the old clone, then clone into a new directory:
+
+```bash
+git clone https://github.com/Viral-Ad-Media/toolx.git toolx-clean
+cd toolx-clean
+git switch master
+```
+
+Reapply necessary local changes individually after checking them for sensitive files or values. Do not merge, pull from, or push branches from an old clone into the cleaned repository: that can restore the contaminated ancestry. Remove old local copies when no longer needed. Fork owners must clean or replace their own copies.
+
+### Remaining incident actions
+
+History cleanup does not revoke credentials or sessions. Reset affected active passwords, invalidate relevant sessions, and rotate any historical signing/API credentials that were used in a live environment. Investigate reused passwords. Do not seed a new deployment from the exposed database. These live-account actions have not been performed by the repository cleanup.
+
+GitHub still retains read-only pull-request references for PRs #1–#8 and may retain cached views or unreachable objects. The repository owner must request sensitive-data removal through [GitHub Support](https://support.github.com/), following [GitHub's removal guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository). Identify `Viral-Ad-Media/toolx`, the affected PRs, the first original commit (`7117553`), and the exposed `db.sqlite3` and `media/` paths; request removal of the relevant PR references/cached views and server-side garbage collection. Include the presence of account records, password hashes, sessions, and private content, without attaching the exposed database or credentials. This Support purge remains outstanding. Rewriting branches cannot erase other people's downloads.
 
 ## Verification
 
