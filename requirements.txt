@@ -11,4 +11,4 @@ django-progressive-web-app
 whitenoise
 django-heroku
 django-tinymce
-reportlab
+reportlab==2.5
