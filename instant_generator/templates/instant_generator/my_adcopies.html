@@ -22,8 +22,8 @@
                 {% for adcopy in adcopies %}
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                         <div class="my_adcopies card p-3">
-                            <h5><a href="{% url 'preview' adcopy.pk%}">{{ adcopy.Get_Attention}}</a></h5>
-                            <p> {{ adcopy.Identify_the_Problem_Your_Audience_Have | slice:":150" }}...</p>
+                            <h5><a href="{% url 'preview' adcopy.pk%}" target="_blank">{{ adcopy.Get_Attention}}</a></h5>
+                            <p> {{ adcopy.created_on.date }}</p>
                         </div>
                     </div>
                 {% endfor %}

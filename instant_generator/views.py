@@ -134,7 +134,9 @@ def my_adcopies(request):
 
 
 def preview(request, pk):
-    generated = InstantGenerator.objects.get(pk=pk)
+    # user = User.objects.get(username=request.user.username)
+    # generated = InstantGenerator.objects.filter(user=user)
+    generated = InstantGenerator.objects.get(user=request.user, pk=pk)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="Sales Letter.pdf"'
 
