@@ -17,6 +17,12 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.pagesizes import A4
 
+from django.core.files.storage import FileSystemStorage
+
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+
 
 # Create your views here.
 def signup(request):
@@ -132,27 +138,25 @@ def my_adcopies(request):
 
 def preview(request, pk):
     generated = InstantGenerator.objects.get(pk=pk)
-
-    return render(request, 'instant_generator/preview.html', {'generated': generated})
-
-
-# def download(request):
-#
-#     return render(request, 'instant_generator/download.html', {})
-
-
-def download(request):
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
 
     buffer = BytesIO()
     p = canvas.Canvas(buffer)
 
-    # generated = InstantGenerator.objects.get(pk=pk)
-
     # Start writing the PDF here
-    # p.drawString(120, 703, generated.Get_Attention)
-    p.drawString(100, 100, 'Hello world.')
+    p.drawString(200, 800, generated.Get_Attention)
+    p.drawString(30, 750, generated.Identify_the_Problem_Your_Audience_Have)
+    p.drawString(30, 720, generated.Provide_the_Solution)
+    p.drawString(30, 660, generated.Present_your_Credentials)
+    p.drawString(30, 650, generated.Show_the_Benefits)
+    p.drawString(30, 640, generated.Give_Social_Proof)
+    p.drawString(30, 630, generated.Make_Your_Offer)
+    p.drawString(30, 620, generated.Give_a_Guarantee)
+    p.drawString(30, 610, generated.Inject_Scarcity)
+    p.drawString(30, 600, generated.Call_to_action)
+    p.drawString(30, 590, generated.Give_a_Warning)
+    p.drawString(30, 560, generated.Close_with_a_Reminder)
     # End writing
 
     p.showPage()
@@ -161,5 +165,28 @@ def download(request):
     pdf = buffer.getvalue()
     buffer.close()
     response.write(pdf)
+
+    return response
+
+    # return render(request, 'instant_generator/preview.html', {'generated': generated})
+
+
+def download(request):
+    doc = SimpleDocTemplate("/tmp/somefilename.pdf")
+    styles = getSampleStyleSheet()
+    Story = [Spacer(1,2*inch)]
+    style = styles["Normal"]
+    for i in range(100):
+       bogustext = ("This is Paragraph number %s.  " % i) * 20
+       p = Paragraph(bogustext, style)
+       Story.append(p)
+       Story.append(Spacer(1,0.2*inch))
+    doc.build(Story)
+
+    fs = FileSystemStorage("/tmp")
+    with fs.open("somefilename.pdf") as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="somefilename.pdf"'
+        return response
 
     return response
