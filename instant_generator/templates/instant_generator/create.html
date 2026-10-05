@@ -13,52 +13,52 @@
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
 
-    <div class="col-7 mt-5">
-        <h4>Fill out the boxes below to generate your Adcopies/Sales letter</h4>
+    <div class="col-7 mt-5 pl-5">
+        <h5 class="pt-5"><b>Fill out the boxes below to generate your Adcopies/Sales letter</b></h5>
          <form method="post">
             {% csrf_token %}
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Get_Attention|as_crispy_field }}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Identify_the_Problem_Your_Audience_Have|as_crispy_field }}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Provide_the_Solution|as_crispy_field }}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Present_your_Credentials|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Show_the_Benefits|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Give_Social_Proof|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Make_Your_Offer|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Give_a_Guarantee|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Inject_Scarcity|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Call_to_action|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Give_a_Warning|as_crispy_field}}
             </div>
-            <div class="p-5">
+            <div class="pt-5">
                 {{ form.Close_with_a_Reminder|as_crispy_field}}
             </div>
-            <div class="pl-5 pr-5">
+            <div class="pt-5 pb-5">
                 <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Submit</button>
             </div>
          </form>
     </div>
-     <div class="col-3 ml-auto sticky-top sidebar">
+     <div class="col-3 ml-auto sticky-top sidebar d-none d-lg-block">
         {% block sidebar %} {% include 'sidebar.html' %} {% endblock sidebar %}
      </div>
 
