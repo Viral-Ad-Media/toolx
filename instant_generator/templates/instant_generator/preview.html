@@ -6,8 +6,6 @@
 {% block content %}
 
 
-
-
 <div class="row">
     <div class="col sticky-top side-nav d-none d-lg-block">
         <a href="/">
@@ -30,14 +28,22 @@
         <p>{{ generated.Give_a_Warning}}</p>
         <p><strong>{{ generated.Close_with_a_Reminder}}</strong></p>
 
-          <a href="/download">
-            <button type="button" class=" xbtn-primary btn btn-primary px-5 py-2">Share </button>
-        </a>
 
-        {% post_to_facebook object_or_url "Post to Facebook!" %}
-        {% post_to_whatsapp object_or_url "Share via WhatsApp" %}
-        {% send_email object.title "New Song: {{object.title}}. Check it out!" object_or_url "Share via email" %}
-        {% post_to_twitter "New Song: {{object.title}}. Check it out!" object_or_url "Post to Twitter" %}
+        <div class="row pt-4">
+            <div class="col-md-3 col-sm-4 col-lg">
+              {% post_to_facebook object_or_url "Post to Facebook!" %}
+            </div>
+            <div class="col-md-3 col-sm-4 col-lg">
+               {% post_to_whatsapp object_or_url "Share via WhatsApp" %}
+            </div>
+            <div class="col-md-3 col-sm-4 col-lg">
+               {% send_email generated.Get_Attention "New Sales Letter: {{generated.Get_Attention}}. Check it out!" object_or_url "Share via email" %}
+            </div>
+            <div class="col-md-3 col-sm-4 col-lg">
+               {% post_to_twitter "New Sales Letter: {{generated.Get_Attention}}. Check it out!" object_or_url "Post to Twitter" %}
+            </div>
+        </div>
+
 
     </div>
 </div>

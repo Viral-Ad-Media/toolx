@@ -5,14 +5,13 @@ a {
     color: #F37753;
 }
 a:hover{
-    color: #FFFFFF;
+    color: #242732;
 }
 
 #hint_id_password1 {
      display: none;
  }
 .navbar {
-    /* background-color: #ff5500 !important; */
     background: #242732 !important;
 }
 .blue-bg{
