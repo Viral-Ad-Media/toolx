@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container p-5"><h2>Resend activation email</h2>
+<form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Resend</button></form></div>
+{% endblock %}

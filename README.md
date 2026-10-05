@@ -1,266 +1,72 @@
 # Tool-X
 
-Tool-X is a Django web app for creating structured ad copy and paraphrase drafts, with user accounts, profile management, and document export (PDF/DOCX).
+Tool-X stores structured sales letters and editable article drafts, with user accounts and owner-only PDF/DOCX exports. It assembles text supplied by the user. It does not offer AI generation, automated paraphrasing, subscriptions, or billing.
 
-## What This App Does
+## Development
 
-- User registration, login, logout, password reset, and account activation email flow.
-- Create and save ad copy records using a guided 12-part structure.
-- Create and save paraphrase entries.
-- View your own saved entries in dashboard/history pages.
-- Export ad copy entries to:
-  - PDF (`reportlab`)
-  - DOCX (`python-docx`)
-- Basic profile management with avatar upload validation.
-
-## Tech Stack
-
-- Python 3.11 (recommended for this repo)
-- Django 3.2.x
-- SQLite for local development
-- Optional PostgreSQL in production via `DATABASE_URL`
-- WhiteNoise for static files
-- Crispy Forms + TinyMCE + django-social-share
-
-## Project Structure
-
-```text
-toolx/
-├── api/                      # Vercel serverless entrypoint
-├── instant_generator/        # Core app (models, views, forms, routes)
-├── static/                   # Source static assets
-├── templates/                # Base + auth + marketing templates
-├── toolx/                    # Django project config (settings, urls, wsgi)
-├── manage.py
-├── requirements.txt
-├── vercel.json
-└── README.md
-```
-
-## Prerequisites
-
-- Python 3.11+
-- `pip`
-- `venv` module (`python3 -m venv`)
-
-## Local Development Setup
-
-1. Create and activate a virtual environment.
+Use Python 3.12 and Django 5.2 LTS. `requirements.txt` pins the complete runtime dependency set; `requirements.in` declares the direct requirements.
 
 ```bash
-python3 -m venv .venv
+python3.12 -m venv .venv
 source .venv/bin/activate
-```
-
-2. Install dependencies.
-
-```bash
-pip install --upgrade pip setuptools wheel
-pip install -r requirements.txt
-```
-
-3. Create environment variables.
-
-Create a `.env` file in the project root with values similar to:
-
-```env
-SECRET_KEY=replace-with-a-long-random-value
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-CSRF_TRUSTED_ORIGINS=
-
-LOGIN_URL=/login/
-LOGOUT_URL=/logout/
-LOGIN_REDIRECT_URL=/dashboard/
-LOGOUT_REDIRECT_URL=/
-
-EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
-EMAIL_HOST=localhost
-EMAIL_HOST_USER=
-EMAIL_HOST_PASSWORD=
-EMAIL_PORT=25
-EMAIL_USE_TLS=False
-EMAIL_USE_SSL=False
-
-ADMIN_EMAIL=admin@example.com
-SUPPORT_EMAIL=support@example.com
-
-# Optional production-style DB override:
-# DATABASE_URL=postgres://user:pass@host:5432/dbname
-```
-
-4. Apply migrations and run the server.
-
-```bash
+python -m pip install -r requirements.txt
+cp .env.example .env
 python manage.py migrate
+python manage.py collectstatic --noinput
 python manage.py runserver
 ```
 
-5. Open the app:
+`.env.example` enables local debug mode and console email. Open the activation link printed to your terminal to activate a new local account. SQLite and local media storage are development-only. Neither databases nor user uploads are tracked in git. Create a local administrator using `python manage.py createsuperuser`; the repository has no seed accounts.
 
-- `http://127.0.0.1:8000/`
+## Account security
 
-## Configuration Notes
+Signup requires an email address. Registration emails use `PUBLIC_ORIGIN`, independent of request Host headers. Activation links expire after one hour, are invalidated by password/email/account-state changes, and can be consumed only once. Successful activation redirects to normal login; it does not create an authenticated session. A failed delivery rolls back registration so the user can retry. `/activation_resend/` responds the same way for eligible and nonexistent accounts.
 
-- If `DATABASE_URL` is not set, the app uses local SQLite (`db.sqlite3`).
-- If `DATABASE_URL` is set, Django uses that database (PostgreSQL recommended for production).
-- Static files are served using WhiteNoise.
-- In `DEBUG=True`, media URLs are served by Django dev server.
+`Profile.activation_pending` distinguishes registration from suspension. Existing inactive users are deliberately **not** marked pending by the migration: an administrator must verify a historical registration before marking its profile pending and sending a fresh link. Never mark a suspended account pending. Old links are invalid after the upgrade. Confirmed account email editing is disabled until a separate new-address verification workflow is implemented.
 
-## Key Routes
+Django 5 logout uses a CSRF-protected POST. Login, signup, reset-email requests and activation resends have database-backed limits. Record creation/editing and exports are also limited across workers. Counters identify anonymous callers using `REMOTE_ADDR`; configure your trusted proxy to provide the real client address safely, rather than trusting arbitrary forwarded headers. Schedule `python manage.py prune_rate_limits` daily. Bound request sizes additionally at the ingress, especially multipart uploads.
 
-### Public
+## Content
 
-- `/` Home page
-- `/features/` Features page
-- `/pricing/` Pricing page
-- `/signup/` Sign up
-- `/login/` Login
-- `/logout/` Logout
-- `/password_reset/` Password reset flow
-- `/activate/<uidb64>/<token>/` Account activation link
+Sales letters contain twelve manually written sections. Text sections are limited to 10,000 characters. PDF export treats submitted content as literal text, escapes markup and preserves line breaks. Both export formats refuse oversized historical records.
 
-### Authenticated
+Article drafts retain their existing `/create_paraphrase/`, `/paraphrase/`, and `/paraphrase_preview/<id>` URLs for compatibility. The interface calls them drafts and provides an owner-only `/draft/edit/<id>/` editor. It displays the saved text once instead of pretending that a second unchanged copy is a generated result. History pages show 20 records per page; dashboard summaries show six of each type.
 
-- `/dashboard/` User dashboard
-- `/profile/` Profile page
-- `/profile/edit` Edit profile + avatar
-- `/create/` Create ad copy
-- `/my_adcopies/` List ad copies
-- `/preview/<id>` View one ad copy (owner only)
-- `/pdf/<id>` Export ad copy as PDF (owner only)
-- `/docx/<id>` Export ad copy as DOCX (owner only)
-- `/create_paraphrase/` Create paraphrase entry
-- `/paraphrase/` List paraphrase entries
-- `/paraphrase_preview/<id>` View paraphrase entry (owner only)
+Avatar files must be valid supported images, at most 100×100 pixels and 20 KB. Accounts without an avatar use a bundled static fallback.
 
-## Data Model Overview
+## Production deployment
 
-### `InstantGenerator`
+Production startup intentionally fails if required configuration is missing. Configure before deploying:
 
-Stores one structured ad copy with 12 text sections and timestamps:
-
-- `Get_Attention`
-- `Identify_the_Problem_Your_Audience_Have`
-- `Provide_the_Solution`
-- `Present_your_Credentials`
-- `Show_the_Benefits`
-- `Give_Social_Proof`
-- `Make_Your_Offer`
-- `Give_a_Guarantee`
-- `Inject_Scarcity`
-- `Call_to_action`
-- `Give_a_Warning`
-- `Close_with_a_Reminder`
-
-### `Paraphrase`
-
-- `Title`
-- `Article`
-- timestamps
-
-### `Profile`
-
-- `user` (1:1 with Django user)
-- `avatar`
-- `email_confirmed`
-- timestamps
-
-## Profile Avatar Validation
-
-The profile form validates uploaded avatars:
-
-- Max dimensions: `100x100`
-- Allowed types: `jpeg`, `pjpeg`, `gif`, `png`
-- Max file size: `20 KB`
-
-## Running Tests
-
-```bash
-python manage.py test
-```
-
-Current tests cover:
-
-- Access control on preview routes (owner-only)
-- Profile update flow
-- Signup creates inactive users pending activation
-
-## Deployment on Vercel
-
-This repo is configured for Vercel with:
-
-- `api/wsgi.py` as the Python function entrypoint
-- `vercel.json` rewrite to route all traffic to Django
-- `collectstatic` build command
-
-### 1) Push to Git provider
-
-Push this project to GitHub/GitLab/Bitbucket.
-
-### 2) Create Vercel project
-
-Import the repository in Vercel.
-
-### 3) Set Vercel environment variables
-
-Required:
-
-- `SECRET_KEY`
 - `DEBUG=False`
-- `ALLOWED_HOSTS=.vercel.app,<your-domain>`
-- `CSRF_TRUSTED_ORIGINS=<your-vercel-domain>,<your-domain>`
+- `SECRET_KEY`: cryptographically random, at least 50 characters; do not reuse the old fallback
+- `ALLOWED_HOSTS`: exact service/custom hostnames (no `.vercel.app` wildcard)
+- `PUBLIC_ORIGIN`: your HTTPS site origin, e.g. `https://toolx.example.com`
+- `DATABASE_URL`: managed PostgreSQL with TLS
+- SMTP backend, host, TLS/SSL choice, port, credentials and verified sender (`ADMIN_EMAIL`)
+- Private S3-compatible media bucket and region; credentials via workload identity or environment; optional endpoint override
 
-Recommended:
+Persistent uploads use django-storages S3 storage, private objects and signed URLs. Restrict storage credentials to the media bucket and configure the bucket yourself; naming a bucket does not provision it. SQLite/local uploads cannot silently substitute in production. HTTPS redirects, secure cookies, and HSTS for the current hostname are enabled; terminate HTTPS at a trusted proxy that strips and sets `X-Forwarded-Proto` correctly. HSTS excludes subdomains and preload.
 
-- `DATABASE_URL` (Vercel Postgres or another managed Postgres)
+Back up an existing database, install the locked dependencies, run `python manage.py migrate`, run `python manage.py collectstatic --noinput`, then start `gunicorn toolx.wsgi --bind 0.0.0.0:$PORT`. Run `python manage.py check --deploy --fail-level WARNING` with the actual environment. `Procfile` supports conventional hosting; `api/wsgi.py` and `vercel.json` support Vercel. Database migrations must run in a controlled release step, not on every request.
 
-Optional (email/custom behavior):
+Production uploads and real SMTP delivery need end-to-end verification with your actual credentials. No ToolX service was found in the inspected Render workspace; this patch does not provision or deploy one.
 
-- `EMAIL_BACKEND`
-- `EMAIL_HOST`
-- `EMAIL_HOST_USER`
-- `EMAIL_HOST_PASSWORD`
-- `EMAIL_PORT`
-- `EMAIL_USE_TLS`
-- `EMAIL_USE_SSL`
-- `ADMIN_EMAIL`
-- `SUPPORT_EMAIL`
+## Public database incident follow-up
 
-### 4) Deploy
+The earlier revision committed a populated database. This change removes it and private media from the branch, but previous commits and downloaded copies remain. Determine whether the exposed identities/passwords are used anywhere else, reset affected active credentials, invalidate relevant sessions, and rotate any exposed historical signing/email secrets. Do not use the old database to seed a new deployment. Coordinate repository-history cleanup separately; do not force-push shared history casually. Deleting a file does not revoke credentials.
+
+## Verification
 
 ```bash
-vercel
-vercel --prod
-```
-
-### Important Production Notes
-
-- Do not rely on SQLite for production on Vercel.
-- Vercel filesystem is ephemeral; user-uploaded media will not persist reliably.
-- Use object storage (S3, Cloudinary, etc.) for persistent media in production.
-
-## Common Issues
-
-### `pg_config executable not found`
-
-If this appears during install, you are trying to compile `psycopg2` from source.
-
-This project uses `psycopg2-binary` in `requirements.txt`, which avoids local `pg_config` builds.
-
-### Collectstatic failures
-
-Make sure static directories exist and dependencies installed:
-
-```bash
+python manage.py check
+python manage.py makemigrations --check --dry-run
 python manage.py collectstatic --noinput
+python manage.py test
+python -m pip install pip-audit
+pip-audit -r requirements.txt
 ```
 
-## Security Checklist (Production)
+GitHub Actions runs these checks plus production configuration validation. Regression tests cover activation use/replay/expiry, suspended accounts, registration delivery failures, CSRF, ownership, content limits, PDF markup, DOCX generation, draft editing, pagination, avatars, logout, and shared throttling.
 
-- Set a strong `SECRET_KEY`
-- Keep `DEBUG=False`
-- Configure `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS` correctly
-- Use PostgreSQL via `DATABASE_URL`
-- Move media uploads to persistent cloud storage
-
+To refresh dependencies in a Python 3.12 environment, install `pip-tools`, run `pip-compile --upgrade --strip-extras requirements.in`, install the resulting file, and rerun verification.

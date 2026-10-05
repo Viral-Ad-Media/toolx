@@ -8,7 +8,7 @@
 <div class="row" >
     <div class="col sticky-top side-nav d-none d-lg-block">
         <a href="/">
-          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
         </a>
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
@@ -39,7 +39,7 @@
          </div>
 
          <div class="mt-5 ml-4">
-            <h4>All Paraphrase </h4>
+            <h4>Recent Article Drafts </h4>
             <a href="/paraphrase"><p class="float-right">View all</p></a>
             <div class="row mt-3    ">
                 {% for  paraphrase in  my_paraphrase %}

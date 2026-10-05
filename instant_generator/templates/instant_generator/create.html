@@ -8,7 +8,7 @@
 <div class="row" >
     <div class="col sticky-top side-nav d-none d-lg-block">
         <a href="/">
-          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
         </a>
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
@@ -65,9 +65,3 @@
 </div>
 
 {% endblock %}
-
-{% block js %}
-<!--  <script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>-->
-<!--  <script src="https://cdn.tiny.cloud/1/3vot7xawq57690tnon3irjd7g7vobbr37ko9ujmz6fna5j9h/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>-->
-<!--  <script>tinymce.init({selector:'textarea'});</script>-->
-{% endblock js%}
