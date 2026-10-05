@@ -4,6 +4,45 @@
 {% block sidebar %}
 
 <div class="pt-5">
+      <form class="form-inline sidebar-form" action="#" method="GET" value="{{request.GET.q}}" >
+           <div class="input-group navbar-input">
+               <input type="text" class="form-control" name="q" placeholder="Search for keywords here" aria-label="Username" aria-describedby="basic-addon1" />
+               <button type="submit" class="btn btn-light sidebar-form-button" value="Search"> Search </button>
+           </div>
+       </form>
+    <h4 class="mt-5 pl-3">Top Keywords</h4>
+    <ol>
+        <li>
+            <a>imc</a>
+        </li>
+        <li>
+            <a>pr</a>
+        </li>
+        <li>
+            <a>market</a>
+        </li>
+        <li>
+            <a>advertisement</a>
+        </li>
+         <li>
+            <a>brand</a>
+        </li>
+         <li>
+            <a>target ad</a>
+        </li>
+         <li>
+            <a>digital marketing</a>
+        </li>
+         <li>
+            <a>marketing mix</a>
+        </li>
+         <li>
+            <a>affiliate marketing</a>
+        </li>
+         <li>
+            <a>dma</a>
+        </li>
+    </ol>
 
 </div>
 

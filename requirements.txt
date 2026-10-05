@@ -10,3 +10,4 @@ django-csp
 django-progressive-web-app
 whitenoise
 django-heroku
+django-tinymce

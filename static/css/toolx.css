@@ -80,6 +80,7 @@ a:hover{
 
 .sidebar{
     background-color: #242732;
+    color: #ffffff;
     height: 100vh;
     right: 0px;
 }
@@ -113,3 +114,17 @@ footer .footer-copyright{
     background: rgba(0, 0, 0, 0.25);
     border-radius: 0px;
 }
+
+
+.sidebar-form input.form-control {
+    border: none !important;
+    background: #FF6633;
+}
+
+.sidebar-form-button {
+    background: white;
+    border-radius: 0px 2px 2px 0px;
+    margin-left: -1px;
+    color: #FF6633;
+}
+

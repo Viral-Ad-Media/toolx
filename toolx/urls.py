@@ -25,5 +25,6 @@ urlpatterns = [
     path('pricing/', views.pricing, name='pricing'),
     path('welcome/', views.welcome, name='welcome'),
     path('', include('instant_generator.urls')),
+    path('tinymce/', include('tinymce.urls')),
 
 ]
