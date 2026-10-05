@@ -11,25 +11,28 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import django_heroku
 
-from decouple import config, Csv
+import dj_database_url
+from decouple import Csv, config
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'REDACTED_HISTORICAL_SECRET_KEY'
+SECRET_KEY = config('SECRET_KEY', default='insecure-development-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,.vercel.app', cast=Csv())
+CSRF_TRUSTED_ORIGINS = [
+    origin for origin in config('CSRF_TRUSTED_ORIGINS', default='', cast=Csv()) if origin
+]
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
@@ -49,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -89,6 +93,14 @@ DATABASES = {
     }
 }
 
+DATABASE_URL = config('DATABASE_URL', default='')
+if DATABASE_URL:
+    DATABASES['default'] = dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=not DEBUG,
+    )
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -128,6 +140,8 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+WHITENOISE_USE_FINDERS = True
 
 # Extra places for collectstatic to find static files.
 STATICFILES_DIRS = (
@@ -142,10 +156,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 #  Login Configuration
-LOGIN_URL = config('LOGIN_URL')
-LOGOUT_URL = config('LOGOUT_URL')
-LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL')
-LOGOUT_REDIRECT_URL = config('LOGOUT_REDIRECT_URL')
+LOGIN_URL = config('LOGIN_URL', default='/login/')
+LOGOUT_URL = config('LOGOUT_URL', default='/logout/')
+LOGIN_REDIRECT_URL = config('LOGIN_REDIRECT_URL', default='/dashboard/')
+LOGOUT_REDIRECT_URL = config('LOGOUT_REDIRECT_URL', default='/')
 
 
 # EMAIL_BACKEND During development only
@@ -153,22 +167,18 @@ LOGOUT_REDIRECT_URL = config('LOGOUT_REDIRECT_URL')
 
 
 # # EMAIL_BACKEND production config (Gmail)
-EMAIL_BACKEND = config('EMAIL_BACKEND')
-EMAIL_HOST = config('EMAIL_HOST')
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD',)
-EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='localhost')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_PORT = config('EMAIL_PORT', default=25, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', default=False, cast=bool)
 
 
 # OTHER EMAIL SETTINGS #
 ########################
-ADMIN_EMAIL = config('ADMIN_EMAIL')
-SUPPORT_EMAIL = config('SUPPORT_EMAIL')
+ADMIN_EMAIL = config('ADMIN_EMAIL', default='admin@example.com')
+SUPPORT_EMAIL = config('SUPPORT_EMAIL', default='support@example.com')
 DEFAULT_FROM_EMAIL = ADMIN_EMAIL
 SERVER_EMAIL = ADMIN_EMAIL
-
-
-# Activate Django-Heroku.
-django_heroku.settings(locals())

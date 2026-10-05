@@ -137,3 +137,4 @@ db.sqlite3/*
 node_modules
 mysite.log
 XDG_CACHE_HOME
+!.python-version

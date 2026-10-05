@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/wsgi.py": {
+      "maxDuration": 30
+    }
+  },
+  "buildCommand": "python manage.py collectstatic --noinput",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/wsgi.py"
+    }
+  ]
+}
