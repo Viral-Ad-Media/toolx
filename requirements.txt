@@ -1,0 +1,12 @@
+django==2.2.10
+gunicorn
+django-crispy-forms
+django_countries
+django-filter
+pillow
+python-decouple
+django-cors-headers
+django-csp
+django-progressive-web-app
+whitenoise
+django-heroku
