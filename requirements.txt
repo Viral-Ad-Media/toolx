@@ -12,3 +12,6 @@ whitenoise
 django-heroku
 django-tinymce
 reportlab
+python-docx
+django-social-share
+

@@ -109,9 +109,23 @@ a:hover{
 .my_adcopies{
     background: #FCDDD4;
     border-radius: 15px;
-
 }
-
+.card-xbtn {
+    margin-left: 0.7rem;
+    background-color:  #FF6633;
+    border-color: #FF6633;
+    color: white;
+    border-radius: 5rem;
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.card-xbtn:hover{
+    background-color: #242732;
+    border-color:  #242732;
+    color: #FFFFFF;
+}
 footer{
     background: #333748;
     color: #FFFFFF;

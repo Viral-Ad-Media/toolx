@@ -12,4 +12,6 @@ urlpatterns = [
     path('congratulation/', views.congratulation, name='congratulation'),
     path('my_adcopies', views.my_adcopies, name='my_adcopies'),
     path('preview/<int:pk>', views.preview, name='preview'),
+    path('pdf/<int:pk>', views.pdf, name='pdf'),
+    path('docx/<int:pk>', views.docx, name='docx'),
 ]

@@ -15,6 +15,9 @@ from io import BytesIO
 from reportlab.pdfgen import canvas
 from django.http import HttpResponse, response
 
+from docx import Document
+from docx.shared import Inches
+
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, PageBreak, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
@@ -135,8 +138,17 @@ def my_adcopies(request):
 
 def preview(request, pk):
     generated = InstantGenerator.objects.get(user=request.user, pk=pk)
+    context = {
+        "generated": generated,
+    }
+
+    return render(request, 'instant_generator/preview.html', context)
+
+
+def pdf(request, pk):
+    generated = InstantGenerator.objects.get(user=request.user, pk=pk)
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="Sales Letter.pdf"'
+    response['Content-Disposition'] = 'attachment; filename="Sales Letter.pdf"'
 
     pdf_buffer = BytesIO()
     # pagesize = (140 * mm, 216 * mm)  # width, height
@@ -218,5 +230,25 @@ def preview(request, pk):
     return response
 
 
+def docx(request, pk):
+    generated = InstantGenerator.objects.get(user=request.user, pk=pk)
+    document = Document()
+    document.add_heading(generated.Get_Attention, 0)
+    document.add_paragraph(generated.Identify_the_Problem_Your_Audience_Have)
+    document.add_paragraph(generated.Provide_the_Solution)
+    document.add_paragraph(generated.Present_your_Credentials)
+    document.add_paragraph(generated.Show_the_Benefits)
+    document.add_paragraph(generated.Give_Social_Proof)
+    document.add_paragraph(generated.Make_Your_Offer)
+    document.add_paragraph(generated.Give_a_Guarantee)
+    document.add_paragraph(generated.Inject_Scarcity)
+    document.add_paragraph(generated.Call_to_action)
+    document.add_paragraph(generated.Give_a_Warning)
+    document.add_paragraph(generated.Close_with_a_Reminder)
 
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+    response['Content-Disposition'] = 'attachment; filename=Sales Letter.docx'
+    document.save(response)
+
+    return response
 
