@@ -148,7 +148,10 @@ def download(request):
     buffer = BytesIO()
     p = canvas.Canvas(buffer)
 
+    # generated = InstantGenerator.objects.get(pk=pk)
+
     # Start writing the PDF here
+    # p.drawString(120, 703, generated.Get_Attention)
     p.drawString(100, 100, 'Hello world.')
     # End writing
 
