@@ -239,12 +239,14 @@ def docx(request, pk):
     document.add_paragraph(generated.Present_your_Credentials)
     document.add_paragraph(generated.Show_the_Benefits)
     document.add_paragraph(generated.Give_Social_Proof)
-    document.add_paragraph(generated.Make_Your_Offer)
+    document.add_paragraph(generated.Make_Your_Offer, style='IntenseQuote')
     document.add_paragraph(generated.Give_a_Guarantee)
     document.add_paragraph(generated.Inject_Scarcity)
     document.add_paragraph(generated.Call_to_action)
     document.add_paragraph(generated.Give_a_Warning)
-    document.add_paragraph(generated.Close_with_a_Reminder)
+
+    p = document.add_paragraph()
+    p.add_run(generated.Close_with_a_Reminder).bold = True
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     response['Content-Disposition'] = 'attachment; filename=Sales Letter.docx'
