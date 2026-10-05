@@ -23,7 +23,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('features/', views.features, name='features'),
     path('pricing/', views.pricing, name='pricing'),
-    # path('thanks/', views.thanks, name='thanks'),
     path('', include('instant_generator.urls')),
 
 ]
