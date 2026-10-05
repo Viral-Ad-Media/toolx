@@ -29,7 +29,7 @@ class UserForm(UserChangeForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = 'avatar'
+        fields = ('avatar',)
 
         def clean_avatar(self):
             avatar = self.cleaned_data['avatar']
