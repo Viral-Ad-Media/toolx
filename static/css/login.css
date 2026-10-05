@@ -1,0 +1,27 @@
+body{
+    overflow: initial;
+    background-image: url("/static/img/duotone.png");
+    background-color: rgb(0, 117, 178);
+}
+
+.banner{
+background-color: #0174C7;
+ color: rgb(255, 255, 255);
+}
+
+.formbg{
+    padding-top: 40px;
+    padding-bottom: 40px;
+    margin-top: 20px;
+    outline: none;
+    border-color: rgb(173, 173, 173);
+    background-color: rgba(0, 117, 178, 0.05);
+    color: rgb(255, 255, 255);
+}
+
+.support{
+background-color: #ffffff;
+}
+.reset-pwd{
+    color: #0174C7;
+}

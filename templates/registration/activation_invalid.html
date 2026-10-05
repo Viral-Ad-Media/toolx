@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Invalid Link{% endblock %}
+{% block content %}
+
+<header>
+  {% block nav %} {% include 'nav.html' %} {% endblock nav %}
+</header>
+  
+<main>
+  <div class="col-lg-6 col-md-6 col-sm-10 mt-5 pt-5 mx-auto">
+    <p>The confirmation link was invalid, possibly because it has already been used.</p>
+  </div>
+</main>
+
+
+<footer>
+  {% block footer %} {% include 'footer-min.html' %} {% endblock footer %}
+</footer>
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">
+            <img src="https://res.cloudinary.com/schohxlg/image/upload/v1561980834/scholarx.co/ScholarX_fiog6y.png" alt="logo" class="img-responsive" style="height: 30px; width: 96px">
+        </a>
+       <div class="mr-auto"></div>
+       <p class="navbarmargin">Don't have an account ?<a href="/signup" style="color: #96B46B"> Sign Up</a></p>   
+    </nav>
+</header>
+
+
+<main>
+    <div class="container mt-5" >
+        <div class="text-center">
+            <h2 class="login">Login to your ScholarX account.</h2>
+                <div class="col-md-5 mx-auto">
+                <!-- <p class="facebook-login"><a href="{% url 'social:begin' 'facebook' %}">Login with Facebook</a></p> -->
+                <!-- <p class="google-login"><a href="{% url 'social:begin' 'google-oauth2' %}">Login with Google</a></p>-->
+                <!-- <p class="login-or">OR</p>-->
+                {% if form.errors and not form.non_field_errors %}
+                <p class="errornote">
+                    
+                </p>
+                {% endif %}
+
+                {% if form.non_field_errors %}
+                {% for error in form.non_field_errors %}
+                <p class="errornote">
+                    {{ error }}
+                </p>
+                {% endfor %}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="login-form col-md-4 offset-md-4">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="">
+                    {{ form.username.errors }}
+                    {{ form.username|as_crispy_field }}
+                </div>
+
+                <div class="">
+                    {{ form.password.errors }}
+                    {{ form.password|as_crispy_field }}
+                </div>
+
+                <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="Remember">
+                    <label class="form-check-label" for="Remember">Remember me</label><a href="/password_reset" style="padding-left: 6rem; color: #96B46B">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn btn-primary login-submit mt-3">Login</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+
+<footer>
+{% block footer %} {% include 'footer-min.html' %} {% endblock footer %}
+</footer>
+
+
+{% endblock %}
+
+
+
+
+
+

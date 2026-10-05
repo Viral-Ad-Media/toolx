@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Activation Sent{% endblock %}
+{% block content %}
+
+
+<header>
+{% block nav %} {% include 'nav.html' %} {% endblock nav %}
+</header>
+
+<div class="container mt-5 text-center">
+    <img src="https://res.cloudinary.com/schohxlg/image/upload/v1561980538/scholarx.co/icons/sent_hertqm.png" class="mt-5">
+    <h2>E-mail sent</h2>
+    <p>Kindly check your e-mail to validate your account</p>
+</div>
+
+
+<footer>
+{% block footer %} {% include 'footer-min.html' %} {% endblock footer %}
+</footer>
+
+
+{% endblock %}
