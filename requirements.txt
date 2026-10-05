@@ -14,4 +14,4 @@ django-tinymce
 reportlab
 python-docx
 django-social-share
-
+django-social-widgets
