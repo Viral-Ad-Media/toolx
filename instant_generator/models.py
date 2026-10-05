@@ -1,5 +1,4 @@
 from django.db import models
-# from tinymce.models import HTMLField
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
@@ -26,6 +25,15 @@ class InstantGenerator(models.Model):
 
     def __str__(self):
         return f'{self.Get_Attention}'
+
+
+class Paraphrase(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    Title = models.CharField(max_length=255)
+    Article = models.TextField()
+
+    def __str__(self):
+        return f'{self.Title}'
 
 
 class Profile(models.Model):

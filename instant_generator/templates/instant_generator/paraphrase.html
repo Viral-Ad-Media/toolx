@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block title %} Create {% endblock %}
+{% block title %} Paraphrase {% endblock %}
 {% block content %}
 
 
@@ -13,8 +13,26 @@
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
 
-    <div class="col-7 mt-5 pl-5">
-        <h5 class="pt-5"><b>Fill out the form below to to paraphrase</b></h5>
+    <div class="col-5 mt-5 pl-5">
+        <h4 class="pt-5"><b>Fill out the form below to to paraphrase</b></h4>
+        <form method="post">
+            {% csrf_token %}
+            <div class="pt-5">
+                {{ form.Title|as_crispy_field }}
+            </div>
+            <div class="pt-3">
+                {{ form.Article|as_crispy_field }}
+            </div>
+            <div class="pt-5 pb-5">
+                <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Submit</button>
+            </div>
+         </form>
+
+    </div>
+    <div class="col-5 mt-5 ">
+        <h4 class="pt-5"><b>Fill out the form below to to paraphrase</b></h4>
+        <h5 class="pt-5">Paraphased Title</h5>
+        <p class="pt-5">Paraphrase article Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. In metus vulputate eu scelerisque felis imperdiet proin. Elementum nisi quis eleifend quam adipiscing. Arcu bibendum at varius vel pharetra. Ornare lectus sit amet est placerat in egestas. Lobortis elementum nibh tellus molestie nunc non blandit massa enim. Etiam erat velit scelerisque in dictum non consectetur. Id porta nibh venenatis cras. Tellus molestie nunc non blandit massa enim. Elementum facilisis leo vel fringilla est ullamcorper eget. Etiam tempor orci eu lobortis elementum. Sed euismod nisi porta lorem mollis aliquam ut porttitor leo. Sit amet purus gravida quis blandit turpis.</p>
 
     </div>
 

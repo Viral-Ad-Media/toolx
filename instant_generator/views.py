@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib import messages
 from django.template.loader import render_to_string
 from .models import User, InstantGenerator
-from .forms import UserForm, ProfileForm, InstantGeneratorForm
+from .forms import *
 from .tokens import account_activation_token
 from django.db import transaction
 
@@ -133,9 +133,19 @@ def congratulation(request):
 
 @login_required
 def paraphrase(request):
+    if request.method == 'POST':
+        form = ParaphraseForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            return redirect('congratulation')
+
+    else:
+        form = ParaphraseForm()
 
     context = {
-
+        'form': form
     }
 
     return render(request, 'instant_generator/paraphrase.html', context)

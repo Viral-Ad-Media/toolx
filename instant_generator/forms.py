@@ -3,7 +3,7 @@ from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.core.files.images import get_image_dimensions
-from .models import InstantGenerator
+from .models import *
 
 
 class InstantGeneratorForm(forms.ModelForm):
@@ -58,3 +58,8 @@ class ProfileForm(forms.ModelForm):
 
             return avatar
 
+
+class ParaphraseForm(forms.ModelForm):
+    class Meta:
+        model = Paraphrase
+        fields = ('Title', 'Article',)
