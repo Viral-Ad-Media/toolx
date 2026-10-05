@@ -11,6 +11,12 @@ from .forms import UserForm, ProfileForm, InstantGeneratorForm
 from .tokens import account_activation_token
 from django.db import transaction
 
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.lib.pagesizes import A4
+
 
 # Create your views here.
 def signup(request):
@@ -130,7 +136,27 @@ def preview(request, pk):
     return render(request, 'instant_generator/preview.html', {'generated': generated})
 
 
+# def download(request):
+#
+#     return render(request, 'instant_generator/download.html', {})
+
+
 def download(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="mypdf.pdf"'
 
-    return render(request, 'instant_generator/download.html', {})
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
 
+    # Start writing the PDF here
+    p.drawString(100, 100, 'Hello world.')
+    # End writing
+
+    p.showPage()
+    p.save()
+
+    pdf = buffer.getvalue()
+    buffer.close()
+    response.write(pdf)
+
+    return response
