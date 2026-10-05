@@ -6,11 +6,10 @@ from django.core.files.images import get_image_dimensions
 
 
 class UserForm(UserCreationForm):
-    # password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email')
+        fields = ('username', 'email')
 
 
 class ProfileForm(forms.ModelForm):
