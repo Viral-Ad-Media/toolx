@@ -46,6 +46,16 @@ a:hover{
     border: 1px solid #F37753;
     color: #FFFFFF;
 }
+.xbtn-outline{
+    color: #F37753;
+    border-color: #F37753;
+}
+
+.xbtn-outline:hover{
+    color: #FFFFFF !important;
+    background: #F37753 !important;
+    border: 1px solid #F37753;
+}
 
 .side-nav{
     background-color: #242732; /* Dark-blue background */
@@ -126,5 +136,11 @@ footer .footer-copyright{
     border-radius: 0px 2px 2px 0px;
     margin-left: -1px;
     color: #FF6633;
+}
+
+.pricing{
+ background-image: url("/static/img/pricingBg.png");
+ background-color: #333748;
+ color: white;
 }
 

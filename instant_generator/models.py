@@ -1,4 +1,5 @@
 from django.db import models
+from tinymce.models import HTMLField
 # from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from django.db.models.signals import post_save
@@ -30,7 +31,7 @@ User = get_user_model()
 class InstantGenerator(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     Get_Attention = models.CharField(max_length=255)
-    Identify_the_Problem_Your_Audience_Have = models.TextField()
+    Identify_the_Problem_Your_Audience_Have = HTMLField()
     Provide_the_Solution = models.TextField()
     Present_your_Credentials = models.TextField()
     Show_the_Benefits = models.TextField()
