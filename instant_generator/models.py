@@ -31,7 +31,7 @@ class InstantGenerator(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     Get_Attention = models.CharField(max_length=255)
     Identify_the_Problem_Your_Audience_Have = models.TextField()
-    Provide_the_Solution = models.CharField(max_length=255)
+    Provide_the_Solution = models.TextField()
     Present_your_Credentials = models.TextField()
     Show_the_Benefits = models.TextField()
     Give_Social_Proof = models.TextField()

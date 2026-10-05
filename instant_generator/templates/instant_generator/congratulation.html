@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Congratulations {% endblock %}
+{% block content %}
+
+
+
+
+<div class="row" >
+    <div class="col side-nav">
+        <a href="/">
+          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+        </a>
+        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
+    </div>
+
+    <div class="col-10 my-auto text-center">
+        <h3> Congratulations {{ user.username }}</h3>
+        <p class="pb-5">Email / AdCopies has been generated.</p>
+        <a href="/preview" class="ml-4">Preview &rarr;</a>
+        <a href="/download" >
+            <button type="button" class=" xbtn-primary btn btn-primary px-5 py-2">Download</button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

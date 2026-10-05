@@ -102,10 +102,25 @@ def create(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            return redirect('request_submitted')
+            return redirect('.congratulation')
 
     else:
         form = InstantGeneratorForm()
 
     return render(request, 'instant_generator/create.html', {'form': form})
+
+
+def congratulation(request):
+
+    return render(request, 'instant_generator/congratulation.html', {})
+
+
+def preview(request):
+
+    return render(request, 'instant_generator/preview.html', {})
+
+
+def download(request):
+
+    return render(request, 'instant_generator/download.html', {})
 

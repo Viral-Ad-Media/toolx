@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Congratulations {% endblock %}
+{% block content %}
+
+
+
+
+<div class="row" >
+    <div class="col side-nav">
+        <a href="/">
+          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+        </a>
+        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
+    </div>
+
+    <div class="col-10 my-auto text-center">
+
+    </div>
+</div>
+
+{% endblock %}
