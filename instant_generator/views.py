@@ -132,6 +132,16 @@ def congratulation(request):
 
 
 @login_required
+def paraphrase(request):
+
+    context = {
+
+    }
+
+    return render(request, 'instant_generator/paraphrase.html', context)
+
+
+@login_required
 def my_adcopies(request):
     adcopies = InstantGenerator.objects.filter(user=request.user).order_by('-created_on')
     context = {
