@@ -71,11 +71,13 @@ def activate(request, uidb64, token):
         return render(request, 'registration/activation_invalid.html')
 
 
+@login_required
 def profile(request):
 
     return render(request, 'registration/profile.html', {'user': request.user})
 
 
+@login_required
 @transaction.atomic
 def edit_profile(request):
     if request.method == 'POST':
@@ -100,6 +102,7 @@ def edit_profile(request):
     })
 
 
+@login_required
 def dashboard(request):
 
     return render(request, 'instant_generator/dashboard.html', {})
@@ -122,14 +125,15 @@ def create(request):
     return render(request, 'instant_generator/create.html', {'form': form})
 
 
+@login_required
 def congratulation(request):
 
     return render(request, 'instant_generator/congratulation.html', {})
 
 
+@login_required
 def my_adcopies(request):
-    # adcopies = InstantGenerator.objects.all().order_by('-created_on')
-    adcopies = InstantGenerator.objects.filter(user=request.user)
+    adcopies = InstantGenerator.objects.filter(user=request.user).order_by('-created_on')
     context = {
         "adcopies": adcopies,
     }

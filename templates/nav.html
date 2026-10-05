@@ -11,19 +11,21 @@
         </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav ml-auto">
-<!--        <li class="nav-item">-->
-<!--          <a class="nav-link" href="/features">Features</a>-->
-<!--        </li>-->
+        {% if user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="/dashboard">Dashboard</a>
+            </li>
+        {% endif %}
         <li class="nav-item">
           <a class="nav-link" href="/pricing">Pricing</a>
         </li>
            {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                         <img class="rounded-circle"  src="{{ user.avatar.url }}" style="max-width: 2em; margin-right: 10px;">{{ user.username }}
+                         <img class="rounded-circle"  src="{{ profile.avatar.url }}" style="max-width: 2em; margin-right: 10px;">{{ user.username }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="/dashboard">Dashboard</a>
+                        <a class="dropdown-item" href="/profile">Profile</a>
                         <a class="dropdown-item" href="/logout">Logout</a>
                     </div>
                 </li>
