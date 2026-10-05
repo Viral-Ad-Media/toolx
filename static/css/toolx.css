@@ -47,6 +47,42 @@ a:hover{
     color: #FFFFFF;
 }
 
+.side-nav{
+    background-color: #242732; /* Dark-blue background */
+    max-width: 120px;
+    text-align: center;
+    height: 100vh;
+    padding-top: 25px;
+}
+/* icon Bar */
+.icon-bar {
+  width: 90px; /* Set a specific width */
+  background-color: #242732; /* Dark-blue background */
+}
+
+.icon-bar a {
+  display: block; /* Make the links appear below each other instead of side-by-side */
+  text-align: center; /* Center-align text */
+  padding: 16px; /* Add some padding */
+  transition: all 0.3s ease; /* Add transition for hover effects */
+  color: #F6A182; /* White text color */
+  font-size: 36px; /* Increased font-size */
+}
+
+.icon-bar a:hover {
+  color: #FF6633
+}
+
+.active {
+  color: #FF6633 !important;
+}
+/* End icon Bar */
+
+.sidebar{
+    background-color: #242732;
+    height: 100vh;
+    right: 0px;
+}
 
 .cta{
     padding-top: 15px;
@@ -59,6 +95,7 @@ a:hover{
     border-left: 10px solid #ED4D47;
     height: 160px;
 }
+
 
 footer{
     background: #333748;

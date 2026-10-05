@@ -1,13 +1,13 @@
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.decorators import user_passes_test
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib import messages
 from django.template.loader import render_to_string
-from .models import User
-from .forms import UserForm, ProfileForm
+from .models import User, InstantGenerator
+from .forms import UserForm, ProfileForm, InstantGeneratorForm
 from .tokens import account_activation_token
 from django.db import transaction
 
@@ -34,7 +34,7 @@ def signup(request):
     else:
         form = UserForm()
 
-    return render(request, 'instant_generator/signup.html', {'form': form})
+    return render(request, 'registration/signup.html', {'form': form})
 
 
 def activation_sent(request):
@@ -91,4 +91,21 @@ def edit_profile(request):
 def dashboard(request):
 
     return render(request, 'instant_generator/dashboard.html', {})
+
+
+@login_required
+@transaction.atomic
+def create(request):
+    if request.method == 'POST':
+        form = InstantGeneratorForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.user = request.user
+            instance.save()
+            return redirect('request_submitted')
+
+    else:
+        form = InstantGeneratorForm()
+
+    return render(request, 'instant_generator/create.html', {'form': form})
 

@@ -3,10 +3,18 @@ from .models import Profile
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.core.files.images import get_image_dimensions
+from .models import InstantGenerator
+
+
+class InstantGeneratorForm(forms.ModelForm):
+    class Meta:
+        model = InstantGenerator
+        fields = ('Get_Attention', 'Identify_the_Problem_Your_Audience_Have', 'Provide_the_Solution',
+                  'Present_your_Credentials', 'Show_the_Benefits', 'Give_Social_Proof', 'Make_Your_Offer',
+                  'Give_a_Guarantee', 'Inject_Scarcity', 'Call_to_action', 'Give_a_Warning', 'Close_with_a_Reminder')
 
 
 class UserForm(UserCreationForm):
-
     class Meta:
         model = User
         fields = ('username', 'email')
@@ -49,7 +57,6 @@ class ProfileForm(forms.ModelForm):
                 pass
 
             return avatar
-
 
 # class ProfileChangeForm(UserChangeForm):
 #     """A form for updating users. Includes all the fields on the user, but replaces the

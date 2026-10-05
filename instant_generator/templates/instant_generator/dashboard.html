@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %} Sign Up {% endblock %}
+{% block content %}
+
+
+
+
+<div class="row" >
+    <div class="col side-nav">
+        <a href="/">
+          <img src="{% static '/img/alt-logo.png' %}" alt="logo" class="img-responsive">
+        </a>
+        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
+    </div>
+
+    <div class="col-10 my-auto text-center">
+        <h3> Welcome {{ user.username }}</h3>
+        <p class="pb-5">Start generating Adcopies</p>
+        <a href="/create" >
+            <button type="button" class=" xbtn-primary btn btn-primary px-5 py-2">Create AdCopies</button>
+        </a>
+    </div>
+</div>
+
+{% endblock %}

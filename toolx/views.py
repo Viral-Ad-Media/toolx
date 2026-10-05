@@ -16,3 +16,7 @@ def pricing(request):
 
     return render(request, 'pricing.html', {})
 
+
+def welcome(request):
+
+    return render(request, 'registration/welcome.html')
