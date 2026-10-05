@@ -6,7 +6,9 @@
 <div class="" style="height: 100vh;">
     <div class="row" style="height: 100vh;">
        <div class="col-sm-6 blue-bg text-center">
-          <img src="{% static '/img/logo-large.png' %}" alt="logo" class="img-fluid mt-5 pt-5">
+           <a class="navbar-brand" href="/">
+               <img src="{% static '/img/logo-large.png' %}" alt="logo" class="img-fluid mt-5 pt-5">
+           </a>
       </div>
       <div class="col-sm-6 p-5">
           <h2>Sign Up</h2>
@@ -18,11 +20,6 @@
           <div class="row">
               <div class="col-md-6 passwordfirst">
                 {{ form.password1|as_crispy_field }}
-                  <style>
-                         #hint_id_username, #hint_id_password1 {
-                             display: none;
-                         }
-                </style>
               </div>
               <div class="col-md-6 confirmpassword">
                 {{ form.password2|as_crispy_field }}

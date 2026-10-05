@@ -7,6 +7,10 @@ a {
 a:hover{
     color: #FFFFFF;
 }
+
+#hint_id_password1 {
+     display: none;
+ }
 .navbar {
     /* background-color: #ff5500 !important; */
     background: #242732 !important;
