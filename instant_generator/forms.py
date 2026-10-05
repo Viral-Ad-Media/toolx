@@ -64,10 +64,3 @@ class ProfileForm(forms.ModelForm):
 
             return avatar
 
-# class ProfileChangeForm(UserChangeForm):
-#     """A form for updating users. Includes all the fields on the user, but replaces the
-#     password field with admin's password hash display field. """
-#
-#     class Meta:
-#         model = User
-#         fields = ('username', 'email', 'password')
