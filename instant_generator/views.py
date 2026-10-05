@@ -128,7 +128,8 @@ def congratulation(request):
 
 
 def my_adcopies(request):
-    adcopies = InstantGenerator.objects.all().order_by('-created_on')
+    # adcopies = InstantGenerator.objects.all().order_by('-created_on')
+    adcopies = InstantGenerator.objects.filter(user=request.user)
     context = {
         "adcopies": adcopies,
     }
@@ -137,7 +138,7 @@ def my_adcopies(request):
 
 
 def preview(request, pk):
-    generated = InstantGenerator.objects.get(user=request.user, pk=pk)
+    generated = InstantGenerator.objects.get(pk=pk)
     context = {
         "generated": generated,
     }

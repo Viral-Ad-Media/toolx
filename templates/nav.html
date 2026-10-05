@@ -20,7 +20,7 @@
            {% if user.is_authenticated %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {{ user.username }}
+                         <img class="rounded-circle"  src="{{ user.avatar.url }}" style="max-width: 2em; margin-right: 10px;">{{ user.username }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                         <a class="dropdown-item" href="/dashboard">Dashboard</a>
