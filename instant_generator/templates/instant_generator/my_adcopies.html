@@ -15,14 +15,15 @@
         {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
     </div>
 
-    <div class="col-10 my-auto text-center">
+    <div class="col-10 mt-5">
+        <h4>My Adcopies </h4>
 
-            <div class="row">
+            <div class="row mt-5">
                 {% for adcopy in adcopies %}
                     <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                        <div style = "background: #ffffff; width: 350px;  height: 200px;  box-shadow: 0px 4px 12px #F0F0F0; border-radius: 6px 6px 0px 0px; padding: 20px;">
-                            <h5><a href="{% url 'preview' adcopy.pk%}" style="color: #000">{{ adcopy.Get_Attention | slice:":24"}}...</a></h5>
-                            <p style = "text-align: justify;"> {{ adcopy.Identify_the_Problem_Your_Audience_Have | slice:":150" }}...</p>
+                        <div class="my_adcopies card p-3">
+                            <h5><a href="{% url 'preview' adcopy.pk%}">{{ adcopy.Get_Attention}}</a></h5>
+                            <p> {{ adcopy.Identify_the_Problem_Your_Audience_Have | slice:":150" }}...</p>
                         </div>
                     </div>
                 {% endfor %}

@@ -95,7 +95,11 @@ a:hover{
     border-left: 10px solid #ED4D47;
     height: 160px;
 }
+.my_adcopies{
+    background: #FCDDD4;
+    border-radius: 15px;
 
+}
 
 footer{
     background: #333748;
