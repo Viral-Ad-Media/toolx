@@ -187,3 +187,72 @@ class ContentTests(TestCase):
             for _ in range(10):
                 self.assertEqual(self.client.post(reverse('login'), {'username': 'no-user', 'password': 'wrong'}).status_code, 200)
             self.assertEqual(self.client.post(reverse('login'), {}).status_code, 429)
+
+
+@override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend', PUBLIC_ORIGIN='https://toolx.example.com')
+class FollowUpReviewTests(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user('reader', email='reader@example.com', password='StrongPass123!')
+
+    def test_password_reset_uses_canonical_origin_and_remains_single_use(self):
+        from django.contrib.auth.tokens import default_token_generator
+        self.assertEqual(self.client.get(reverse('password_reset')).status_code, 200)
+        response = self.client.post(reverse('password_reset'), {'email': self.user.email})
+        self.assertRedirects(response, reverse('password_reset_done'))
+        self.assertIn('https://toolx.example.com/reset/', mail.outbox[0].body)
+        self.assertNotIn('testserver', mail.outbox[0].body)
+        uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        token = default_token_generator.make_token(self.user)
+        start = self.client.get(reverse('password_reset_confirm', args=[uid, token]))
+        self.assertEqual(start.status_code, 302)
+        self.assertRedirects(self.client.post(start.url, {'new_password1': 'NewStrongPass123!', 'new_password2': 'NewStrongPass123!'}), reverse('password_reset_complete'))
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password('NewStrongPass123!'))
+        self.assertFalse(default_token_generator.check_token(self.user, token))
+
+    def test_password_change_screen_and_logout_work_for_nonstaff(self):
+        self.client.force_login(self.user)
+        page = self.client.get(reverse('password_change'))
+        self.assertContains(page, 'Back to profile')
+        self.assertNotContains(page, '/admin/')
+        response = self.client.post(reverse('password_change'), {'old_password': 'StrongPass123!', 'new_password1': 'NewStrongPass123!', 'new_password2': 'NewStrongPass123!'})
+        self.assertRedirects(response, reverse('password_change_done'))
+        self.assertContains(self.client.get(reverse('password_change_done')), 'Back to dashboard')
+        self.assertRedirects(self.client.post(reverse('logout')), reverse('index'))
+
+    def test_public_pages_describe_supported_features_and_working_links(self):
+        self.assertContains(self.client.get(reverse('features')), 'Sales letters')
+        home = self.client.get(reverse('index'))
+        self.assertNotContains(home, '100,000')
+        self.assertContains(home, reverse('features'))
+        pricing = self.client.get(reverse('pricing'))
+        self.assertContains(pricing, 'no paid plans or checkout')
+        self.assertNotContains(pricing, '$15')
+        self.assertNotContains(pricing, 'href="#!"')
+        self.assertNotContains(pricing, 'href="/about"')
+
+    def test_control_characters_cannot_be_saved_or_exported(self):
+        from .forms import ParaphraseForm
+        fields = {f.name: 'Text' for f in InstantGenerator._meta.fields if f.get_internal_type() in ('CharField', 'TextField')}
+        for control in ('\x01', '\x0b', '\ufffe'):
+            invalid = {**fields, 'Provide_the_Solution': 'Text' + control + 'more'}
+            self.assertFalse(InstantGeneratorForm(invalid).is_valid())
+            self.assertFalse(ParaphraseForm({'Title': 'Draft', 'Article': 'Text' + control + 'more'}).is_valid())
+            record = InstantGenerator.objects.create(user=self.user, **invalid)
+            self.client.force_login(self.user)
+            for route in ('pdf', 'docx'):
+                self.assertContains(self.client.get(reverse(route, args=[record.pk])), 'unsupported control', status_code=400)
+        valid = {**fields, 'Provide_the_Solution': 'Text\twith\nline\rbreaks'}
+        self.assertTrue(InstantGeneratorForm(valid).is_valid())
+        record = InstantGenerator.objects.create(user=self.user, **valid)
+        self.assertEqual(self.client.get(reverse('docx', args=[record.pk])).status_code, 200)
+        self.assertEqual(self.client.get(reverse('pdf', args=[record.pk])).status_code, 200)
+
+    def test_signup_conflict_rolls_back_and_returns_form_error(self):
+        # Emulate another request reserving the username after form validation.
+        conflicting = User(username=self.user.username, email='new@example.com')
+        with patch.object(SignUpForm, 'save', return_value=conflicting):
+            response = self.client.post(reverse('signup'), {'username': 'available', 'email': 'new@example.com', 'password1': 'StrongNewPass123!', 'password2': 'StrongNewPass123!'})
+        self.assertContains(response, 'Registration could not be completed')
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(len(mail.outbox), 0)

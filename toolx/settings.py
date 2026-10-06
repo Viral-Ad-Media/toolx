@@ -32,12 +32,18 @@ if DEBUG and not SECRET_KEY:
 if not DEBUG and (len(SECRET_KEY) < 50 or len(set(SECRET_KEY)) < 5 or SECRET_KEY.startswith(('insecure-', 'local-development-', 'django-insecure-'))):
     raise ImproperlyConfigured('Set a strong SECRET_KEY of at least 50 characters for production.')
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1' if DEBUG else '', cast=Csv())
-if not DEBUG and (not ALLOWED_HOSTS or '*' in ALLOWED_HOSTS or '.vercel.app' in ALLOWED_HOSTS):
+if not DEBUG and (not ALLOWED_HOSTS or any(host.startswith('.') or '*' in host or '/' in host or ':' in host or any(char.isspace() for char in host) for host in ALLOWED_HOSTS)):
     raise ImproperlyConfigured('Set ALLOWED_HOSTS to the exact deployment hostnames.')
 PUBLIC_ORIGIN = config('PUBLIC_ORIGIN', default='http://localhost:8000' if DEBUG else '').rstrip('/')
 origin = urlparse(PUBLIC_ORIGIN)
 if origin.scheme not in ('http', 'https') or not origin.hostname or origin.path or origin.query or origin.fragment or origin.username or origin.password or (not DEBUG and origin.scheme != 'https'):
     raise ImproperlyConfigured('PUBLIC_ORIGIN must be the HTTPS origin of your production site.')
+try:
+    origin.port
+except ValueError as error:
+    raise ImproperlyConfigured('PUBLIC_ORIGIN has an invalid port.') from error
+if not DEBUG and origin.hostname.lower() not in {host.lower() for host in ALLOWED_HOSTS}:
+    raise ImproperlyConfigured('PUBLIC_ORIGIN hostname must be included in ALLOWED_HOSTS.')
 CSRF_TRUSTED_ORIGINS = [PUBLIC_ORIGIN]
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = not DEBUG
