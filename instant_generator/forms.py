@@ -1,14 +1,38 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
+from django.conf import settings
+from django.core.exceptions import ValidationError
+from urllib.parse import urlparse
 from django.core.files.images import get_image_dimensions
 
 from .models import InstantGenerator, Paraphrase, Profile
+from .text_validation import validate_document_text
 
 User = get_user_model()
 
 
-class InstantGeneratorForm(forms.ModelForm):
+class DocumentTextForm(forms.ModelForm):
+    def clean(self):
+        cleaned = super().clean()
+        for name, value in list(cleaned.items()):
+            if isinstance(value, str):
+                try:
+                    validate_document_text(value)
+                except ValidationError as error:
+                    self.add_error(name, error)
+        return cleaned
+
+
+class CanonicalPasswordResetForm(PasswordResetForm):
+    def save(self, **kwargs):
+        origin = urlparse(settings.PUBLIC_ORIGIN)
+        kwargs['domain_override'] = origin.netloc
+        kwargs['use_https'] = origin.scheme == 'https'
+        return super().save(**kwargs)
+
+
+class InstantGeneratorForm(DocumentTextForm):
     class Meta:
         model = InstantGenerator
         fields = ('Get_Attention', 'Identify_the_Problem_Your_Audience_Have', 'Provide_the_Solution',
@@ -69,7 +93,7 @@ class ProfileForm(forms.ModelForm):
         return avatar
 
 
-class ParaphraseForm(forms.ModelForm):
+class ParaphraseForm(DocumentTextForm):
     class Meta:
         model = Paraphrase
         fields = ('Title', 'Article',)

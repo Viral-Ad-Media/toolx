@@ -20,7 +20,7 @@ python manage.py runserver
 
 ## Account security
 
-Signup requires an email address. Registration emails use `PUBLIC_ORIGIN`, independent of request Host headers. Activation links expire after one hour, are invalidated by password/email/account-state changes, and can be consumed only once. Successful activation redirects to normal login; it does not create an authenticated session. A failed delivery rolls back registration so the user can retry. `/activation_resend/` responds the same way for eligible and nonexistent accounts.
+Signup requires an email address. Registration and password-reset emails use `PUBLIC_ORIGIN`, independent of request Host headers. Activation links expire after one hour, are invalidated by password/email/account-state changes, and can be consumed only once. Successful activation redirects to normal login; it does not create an authenticated session. A failed delivery rolls back registration so the user can retry. `/activation_resend/` responds the same way for eligible and nonexistent accounts.
 
 `Profile.activation_pending` distinguishes registration from suspension. Existing inactive users are deliberately **not** marked pending by the migration: an administrator must verify a historical registration before marking its profile pending and sending a fresh link. Never mark a suspended account pending. Old links are invalid after the upgrade. Confirmed account email editing is disabled until a separate new-address verification workflow is implemented.
 
@@ -28,7 +28,7 @@ Django 5 logout uses a CSRF-protected POST. Login, signup, reset-email requests 
 
 ## Content
 
-Sales letters contain twelve manually written sections. Text sections are limited to 10,000 characters. PDF export treats submitted content as literal text, escapes markup and preserves line breaks. Both export formats refuse oversized historical records.
+Sales letters contain twelve manually written sections. Text sections are limited to 10,000 characters. PDF export treats submitted content as literal text, escapes markup and preserves line breaks. Forms reject characters unsupported by DOCX/XML, and both exports return a validation response for historical records containing them. Both export formats refuse oversized historical records.
 
 Article drafts retain their existing `/create_paraphrase/`, `/paraphrase/`, and `/paraphrase_preview/<id>` URLs for compatibility. The interface calls them drafts and provides an owner-only `/draft/edit/<id>/` editor. It displays the saved text once instead of pretending that a second unchanged copy is a generated result. History pages show 20 records per page; dashboard summaries show six of each type.
 
@@ -40,8 +40,8 @@ Production startup intentionally fails if required configuration is missing. Con
 
 - `DEBUG=False`
 - `SECRET_KEY`: cryptographically random, at least 50 characters; do not reuse the old fallback
-- `ALLOWED_HOSTS`: exact service/custom hostnames (no `.vercel.app` wildcard)
-- `PUBLIC_ORIGIN`: your HTTPS site origin, e.g. `https://toolx.example.com`
+- `ALLOWED_HOSTS`: exact service/custom hostnames; wildcard and leading-dot subdomain patterns are rejected
+- `PUBLIC_ORIGIN`: your HTTPS site origin, e.g. `https://toolx.example.com`; its hostname must appear in `ALLOWED_HOSTS`
 - `DATABASE_URL`: managed PostgreSQL with TLS
 - SMTP backend, host, TLS/SSL choice, port, credentials and verified sender (`ADMIN_EMAIL`)
 - Private S3-compatible media bucket and region; credentials via workload identity or environment; optional endpoint override
@@ -73,6 +73,10 @@ Reapply necessary local changes individually after checking them for sensitive f
 History cleanup does not revoke credentials or sessions. Reset affected active passwords, invalidate relevant sessions, and rotate any historical signing/API credentials that were used in a live environment. Investigate reused passwords. Do not seed a new deployment from the exposed database. These live-account actions have not been performed by the repository cleanup.
 
 GitHub still retains read-only pull-request references for PRs #1–#8 and may retain cached views or unreachable objects. The repository owner must request sensitive-data removal through [GitHub Support](https://support.github.com/), following [GitHub's removal guidance](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository). Identify `Viral-Ad-Media/toolx`, the affected PRs, the first original commit (`7117553`), and the exposed `db.sqlite3` and `media/` paths; request removal of the relevant PR references/cached views and server-side garbage collection. Include the presence of account records, password hashes, sessions, and private content, without attaching the exposed database or credentials. This Support purge remains outstanding. Rewriting branches cannot erase other people's downloads.
+
+## Follow-up review
+
+Password-reset screens and completion links render correctly, and reset emails use the configured origin even when requests arrive through another allowed host. Password-change screens use the application navigation and CSRF-protected logout. Public pages describe the implemented features; paid-plan cards, unsupported usage claims, and placeholder legal links have been removed. Signup handles a conflicting username created between validation and saving without exposing a server error.
 
 ## Verification
 

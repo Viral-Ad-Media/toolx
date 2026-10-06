@@ -13,6 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.contrib.auth.views import PasswordResetView
+from instant_generator.forms import CanonicalPasswordResetForm
 from django.contrib import admin
 from django.urls import include, path
 from . import views
@@ -21,6 +23,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('password_reset/', PasswordResetView.as_view(form_class=CanonicalPasswordResetForm), name='password_reset'),
     path('', include('django.contrib.auth.urls')),
     path('', views.index, name='index'),
     path('features/', views.features, name='features'),
