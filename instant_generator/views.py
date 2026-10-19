@@ -11,7 +11,8 @@ from django.core.paginator import Paginator
 from django.core.mail import send_mail
 from django.urls import reverse
 from django.views.decorators.http import require_http_methods
-from django.db import transaction
+from django.db import transaction, IntegrityError
+from django.core.exceptions import ValidationError
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template.loader import render_to_string
@@ -24,6 +25,7 @@ from reportlab.platypus import Paragraph, SimpleDocTemplate
 from .forms import InstantGeneratorForm, ParaphraseForm, ProfileForm, SignUpForm, UserForm, ActivationResendForm
 from .models import InstantGenerator, Paraphrase, Profile
 from .tokens import account_activation_token
+from .text_validation import validate_document_text
 
 User = get_user_model()
 
@@ -55,6 +57,8 @@ def signup(request):
                 # Avoid using the cached profile from the signal before updating state.
                 user.refresh_from_db()
                 send_activation(user)
+        except IntegrityError:
+            form.add_error(None, 'Registration could not be completed. Please check your details and try again.')
         except (SMTPException, OSError):
             logger.warning('Registration activation email delivery failed.')
             form.add_error(None, 'We could not send your activation email. Please try again later.')
@@ -211,14 +215,29 @@ def paraphrase_preview(request, pk):
     return render(request, 'instant_generator/paraphrase_preview.html', context)
 
 
+def export_validation_error(record):
+    for field in record._meta.fields:
+        if field.get_internal_type() not in ('CharField', 'TextField'):
+            continue
+        value = getattr(record, field.name)
+        if len(value) > 10000:
+            return 'This record exceeds the export size limit. Shorten the content first.'
+        try:
+            validate_document_text(value)
+        except ValidationError:
+            return 'This record cannot be exported because it contains unsupported control characters.'
+    return None
+
+
 @login_required
 def pdf(request, pk):
     generated = get_object_or_404(InstantGenerator, pk=pk, user=request.user)
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="Sales Letter.pdf"'
 
-    if any(len(getattr(generated, f.name)) > 10000 for f in generated._meta.fields if f.get_internal_type() in ('CharField', 'TextField')):
-        return HttpResponse('This record exceeds the export size limit. Shorten the content first.', status=400)
+    error = export_validation_error(generated)
+    if error:
+        return HttpResponse(error, status=400)
 
     pdf_buffer = BytesIO()
     my_doc = SimpleDocTemplate(pdf_buffer)
@@ -248,8 +267,9 @@ def pdf(request, pk):
 @login_required
 def docx(request, pk):
     generated = get_object_or_404(InstantGenerator, pk=pk, user=request.user)
-    if any(len(getattr(generated, f.name)) > 10000 for f in generated._meta.fields if f.get_internal_type() in ('CharField', 'TextField')):
-        return HttpResponse('This record exceeds the export size limit. Shorten the content first.', status=400)
+    error = export_validation_error(generated)
+    if error:
+        return HttpResponse(error, status=400)
     document = Document()
     document.add_heading(generated.Get_Attention, 0)
     document.add_paragraph(generated.Identify_the_Problem_Your_Audience_Have)
