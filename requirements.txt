@@ -44,7 +44,7 @@ lxml==6.1.3
     # via python-docx
 packaging==26.3
     # via gunicorn
-pillow==12.3.0
+pillow==13.0.0
     # via
     #   -r requirements.in
     #   reportlab
