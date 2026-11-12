@@ -1,58 +1,24 @@
 {% extends 'base.html' %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %}Login{% endblock %}
-
+{% block title %}Log in{% endblock %}
 {% block content %}
-<div class="" style="height: 100vh;">
-    <div class="row" style="height: 100vh;">
-       <div class="col-sm-6 blue-bg text-center">
-           <a class="navbar-brand" href="/">
-               <img src="{% static 'img/logo-large.png' %}" alt="logo" class="img-fluid mt-5 pt-5">
-           </a>
-      </div>
-      <div class="col-sm-6 p-5">
-          <h2>Log In</h2>
-          <form method="post">
-            {% csrf_token %}
-
-            <div class="">
-                {{ form.username.errors }}
-                {{ form.username|as_crispy_field }}
-            </div>
-
-            <div class="">
-                {{ form.password.errors }}
-                {{ form.password|as_crispy_field }}
-            </div>
-
-            <div class="form-group form-check">
-                <input type="checkbox" class="form-check-input" id="Remember">
-                <label class="form-check-label" for="Remember">Remember me</label>
-                <a href="/password_reset" class="d-flex justify-content-end""><span>Forgot Password?</span></a>
-            </div>
-              <div class="col-md-12">
-                  <div class="form-group">
-                    <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Log In</button>
-                  </div>
-              </div>
-          </form>
-
-          <div class="text-center p-4">
-            Don't have an account? <a href="/signup" class="reset-pwd" >Sign Up </a>
-          </div>
-
-      </div>
-    </div>
-</div>
-
-
-
-
+{% include 'nav.html' %}
+<main class="auth-layout container" id="main-content" tabindex="-1">
+  <section class="auth-intro" aria-labelledby="account-heading">
+    <h1 id="account-heading">Welcome back.</h1>
+    <p>Pick up your sales letters and article drafts.</p>
+  </section>
+  <section class="auth-panel" aria-label="Log in">
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+      {% include 'field.html' with field=form.username %}
+      {% include 'field.html' with field=form.password %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <a class="text-link" href="{% url 'password_reset' %}">Forgot your password?</a>
+      <button type="submit" class="btn btn-primary" id="signup">Log in</button>
+    </form>
+    <p class="auth-alternative">New to Tool-X? <a href="{% url 'signup' %}">Create an account</a></p>
+    <p class="auth-alternative"><a href="{% url 'activation_resend' %}">Resend activation email</a></p>
+  </section>
+</main>
 {% endblock %}
-
-
-
-
-
-

@@ -1,54 +1,27 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %} Sign Up {% endblock %}
+{% extends 'base.html' %}
+{% block title %}Create an account{% endblock %}
 {% block content %}
-<div class="" style="height: 100vh;">
-    <div class="row" style="height: 100vh;">
-       <div class="col-sm-6 blue-bg text-center">
-           <a class="navbar-brand" href="/">
-               <img src="{% static 'img/logo-large.png' %}" alt="logo" class="img-fluid mt-5 pt-5">
-           </a>
+{% include 'nav.html' %}
+<main class="auth-layout container" id="main-content" tabindex="-1">
+  <section class="auth-intro" aria-labelledby="account-heading">
+    <h1 id="account-heading">Make room for your next idea.</h1>
+    <p>Create an account to write, save, and revisit your copy.</p>
+  </section>
+  <section class="auth-panel" aria-label="Create an account">
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+      {% include 'field.html' with field=form.username %}
+      {% include 'field.html' with field=form.email %}
+      <div class="form-columns">
+        {% include 'field.html' with field=form.first_name %}
+        {% include 'field.html' with field=form.last_name %}
       </div>
-      <div class="col-sm-6 p-5">
-          <h2>Sign Up</h2>
-          <form method="post" >
-          {% csrf_token %}
-          {{ form.non_field_errors }}
-          {{ form.username|as_crispy_field }}
-          {{ form.email|as_crispy_field }}
-
-
-          <div class="row">
-              <div class="col-md-6 passwordfirst">
-                 {{ form.first_name|as_crispy_field }}
-              </div>
-              <div class="col-md-6 confirmpassword">
-                {{ form.last_name|as_crispy_field }}
-              </div>
-          </div>
-
-          <div class="row">
-              <div class="col-md-6 passwordfirst">
-                {{ form.password1|as_crispy_field }}
-              </div>
-              <div class="col-md-6 confirmpassword">
-                {{ form.password2|as_crispy_field }}
-              </div>
-          </div>
-
-          <div class="col-md-12">
-              <div class="form-group">
-                <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Sign Up</button>
-              </div>
-          </div>
-        </form>
-           <div class="text-center p-4">
-                Already got an account? <a href="/login" class="reset-pwd" >Log In </a>
-            </div>
-      </div>
-    </div>
-</div>
-
-
+      {% include 'field.html' with field=form.password1 %}
+      {% include 'field.html' with field=form.password2 %}
+      <button type="submit" class="btn btn-primary" id="signup">Create account</button>
+    </form>
+    <p class="auth-alternative">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+  </section>
+</main>
 {% endblock %}

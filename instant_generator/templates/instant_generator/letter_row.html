@@ -1,0 +1,4 @@
+<div class="document-row">
+  <div>{% if dashboard %}<h3>{% else %}<h2>{% endif %}<a class="document-title" href="{% url 'preview' adcopy.pk %}">{{ adcopy.Get_Attention }}</a>{% if dashboard %}</h3>{% else %}</h2>{% endif %}<p class="document-meta">Created <time datetime="{{ adcopy.created_on|date:'Y-m-d' }}">{{ adcopy.created_on|date:"j M Y" }}</time></p></div>
+  <div class="actions"><a class="btn btn-secondary" href="{% url 'preview' adcopy.pk %}">Preview<span class="visually-hidden"> {{ adcopy.Get_Attention }}</span></a><a class="text-link" href="{% url 'pdf' adcopy.pk %}">PDF<span class="visually-hidden"> of {{ adcopy.Get_Attention }}</span></a><a class="text-link" href="{% url 'docx' adcopy.pk %}">DOCX<span class="visually-hidden"> of {{ adcopy.Get_Attention }}</span></a></div>
+</div>

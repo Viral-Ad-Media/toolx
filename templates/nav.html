@@ -1,46 +1,16 @@
 {% load static %}
-{% block nav %}
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
-  <div class="container">
-    <a class="navbar-brand" href="/">
-          <img src="{% static 'img/logo.png' %}" alt="logo" class="img-responsive">
-        </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
-        {% if user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="/dashboard">Dashboard</a>
-            </li>
-        {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'pricing' %}">Account access</a>
-        </li>
-           {% if user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                         <img class="avatar rounded-circle mr-2" src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}">{{ user.username }}
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" href="/profile">Profile</a>
-                        <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="btn btn-link" type="submit">Logout</button></form>
-                    </div>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                  <a class="nav-link" href="/login"><b>Login</b></a>
-                </li>
-                <li class="nav-item">
-                    <a href="/signup" ><button type="button" class=" xbtn-primary btn btn-primary">Sign Up Free</button></a>
-                </li>
-           {% endif %}
-
-      </ul>
+<header class="site-header">
+  <nav class="site-nav container" aria-label="{% if user.is_authenticated %}Workspace{% else %}Main{% endif %} navigation">
+    <a class="brand" href="{% url 'index' %}" aria-label="ToolX home"><img src="{% static 'img/logo.png' %}" alt="ToolX" width="88" height="40"></a>
+    <div class="nav-links">
+      {% if user.is_authenticated %}
+        {% include 'icon-bar.html' %}
+      {% else %}
+        <a href="{% url 'features' %}" {% if request.resolver_match.url_name == 'features' %}aria-current="page"{% endif %}>Features</a>
+        <a href="{% url 'pricing' %}" {% if request.resolver_match.url_name == 'pricing' %}aria-current="page"{% endif %}>Account access</a>
+        <a href="{% url 'login' %}" {% if request.resolver_match.url_name == 'login' %}aria-current="page"{% endif %}>Log in</a>
+        <a class="nav-create" href="{% url 'signup' %}" {% if request.resolver_match.url_name == 'signup' %}aria-current="page"{% endif %}>Create account</a>
+      {% endif %}
     </div>
-  </div>
-</nav>
-
-{% endblock nav %}
+  </nav>
+</header>

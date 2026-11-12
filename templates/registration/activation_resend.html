@@ -1,5 +1,20 @@
 {% extends 'base.html' %}
+{% block title %}Resend activation email{% endblock %}
 {% block content %}
-<div class="container p-5"><h2>Resend activation email</h2>
-<form method="post">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Resend</button></form></div>
+{% include 'nav.html' %}
+<main class="auth-layout container" id="main-content" tabindex="-1">
+  <section class="auth-intro" aria-labelledby="account-heading">
+    <h1 id="account-heading">Get a fresh activation link.</h1>
+    <p>Use the email address you registered with.</p>
+  </section>
+  <section class="auth-panel" aria-label="Resend activation email">
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}{% include 'field.html' with field=field %}{% endfor %}
+      <button type="submit" class="btn btn-primary">Resend activation email</button>
+    </form>
+    <p class="auth-alternative"><a href="{% url 'login' %}">Back to login</a></p>
+  </section>
+</main>
 {% endblock %}

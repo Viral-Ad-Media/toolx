@@ -78,6 +78,14 @@ GitHub still retains read-only pull-request references for PRs #1–#8 and may r
 
 Password-reset screens and completion links render correctly, and reset emails use the configured origin even when requests arrive through another allowed host. Password-change screens use the application navigation and CSRF-protected logout. Public pages describe the implemented features; paid-plan cards, unsupported usage claims, and placeholder legal links have been removed. Signup handles a conflicting username created between validation and saving without exposing a server error.
 
+## Interface and accessibility
+
+The Hallmark-guided redesign preserves ToolX’s coral/navy identity and Lato typography. A labeled navigation bar works on small screens; a native Create disclosure keeps global writing shortcuts available without JavaScript. Dashboard and history pages explain empty states, forms show validation errors and password guidance, and previews preserve line breaks and safe text escaping. No routes, schema, authorization rules, or export behavior changed.
+
+See [the UI audit](docs/ui-ux-audit.md) for findings, design decisions, preserved wiring and verification limits. Shared tokens live in `static/css/tokens.css`; reusable form and workspace markup lives in `templates/field.html` and `templates/app_base.html`.
+
+Browser checks are development tools, separate from the Python application. With Python dependencies, Node 24 and Chrome installed, run `npm ci`, `python manage.py collectstatic --noinput`, then `npm run test:ui` (`DEBUG=True`). Set `PYTHON_BIN` or `CHROME_PATH` if needed. The runner creates a disposable SQLite database and sample accounts, checks 14 screens at six widths, runs WCAG audits on desktop and mobile, and saves screenshots under `.hallmark/browser/`. GitHub Actions uploads that directory as `toolx-ui-browser-evidence`. These checks do not connect to a production database.
+
 ## Verification
 
 ```bash

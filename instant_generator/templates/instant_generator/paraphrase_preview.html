@@ -1,23 +1,6 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-
-{% block title %} Preview {% endblock %}
-{% block content %}
-
-
-<div class="row">
-    <div class="col sticky-top side-nav d-none d-lg-block">
-        <a href="/">
-          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
-        </a>
-        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
-    </div>
-
-    <div class="col-10 mt-5 p-5">
-        <h4>{{ original.Title }}</h4>
-        <div>{{ original.Article|linebreaks }}</div>
-        <a class="btn btn-primary" href="{% url 'edit_draft' original.pk %}">Edit draft</a>
-    </div>
-</div>
+{% extends "app_base.html" %}
+{% block title %}Article draft preview{% endblock %}
+{% block workspace %}
+<header class="page-heading"><div><h1>Article draft preview</h1><p>Read your saved draft or return to editing.</p></div><div class="actions"><a class="btn btn-primary" href="{% url 'edit_draft' original.pk %}">Edit draft</a><a class="text-link" href="{% url 'paraphrase' %}">My article drafts</a></div></header>
+<article class="document-sheet"><h2>{{ original.Title }}</h2><div class="document-section">{{ original.Article|linebreaks }}</div></article>
 {% endblock %}

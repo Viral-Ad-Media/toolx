@@ -1,54 +1,15 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %}Edit Profile {% endblock %}
-{% block content %}
-
-
-<header>
-{% block nav %} {% include 'nav.html' %} {% endblock nav %}
-</header>
-
-
-<div class="container mb-5" style="margin-top: 5rem">
-
-    <h2>Edit Profile</h2>
-    <div class="row">
-        <div class="col-lg-10 col-md-10 col-sm-10 px-auto">
-            <form method="post" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form.avatar |as_crispy_field }}
-
-                <div class="row">
-                    <div class="col-6">
-                    {{ user_form.username |as_crispy_field }}
-                    </div>
-                    <div class="col-6">
-                    {{ user_form.email |as_crispy_field }}
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-6">
-                    {{ user_form.first_name |as_crispy_field }}
-                    </div>
-                    <div class="col-6">
-                    {{ user_form.last_name |as_crispy_field }}
-                    </div>
-                </div>
-
-
-
-                <button type="submit" class="xbtn-primary btn-primary login-submit mt-3">Update</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-<footer>
-{% block footer %} {% include 'footer.html' %} {% endblock footer %}
-</footer>
-
+{% extends 'app_base.html' %}
+{% block title %}Edit profile{% endblock %}
+{% block workspace %}
+<header class="page-heading"><div><h1>Edit profile</h1><p>Update the details shown in your account.</p></div><a class="text-link" href="{% url 'profile' %}">Back to profile</a></header>
+<div class="editor-layout"><div class="editor-main"><form method="post" enctype="multipart/form-data" class="form-stack">{% csrf_token %}
+{% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+{% if user_form.non_field_errors %}<div class="form-errors" role="alert">{{ user_form.non_field_errors }}</div>{% endif %}
+{% include 'field.html' with field=form.avatar %}
+{% include 'field.html' with field=user_form.username %}
+{% include 'field.html' with field=user_form.email %}
+{% include 'field.html' with field=user_form.first_name %}
+{% include 'field.html' with field=user_form.last_name %}
+<div class="actions"><button type="submit" class="btn btn-primary">Save profile</button><a class="btn btn-secondary" href="{% url 'profile' %}">Cancel</a></div>
+</form></div><aside class="editor-aside"><h2>Your profile photo</h2><p>Choose a JPEG, GIF, or PNG up to 100 × 100 pixels and 20 KB.</p><p>Email changes are currently unavailable.</p></aside></div>
 {% endblock %}

@@ -133,7 +133,7 @@ staticfiles
 .idea
 .env
 .vscode
-db.sqlite3/*
+*.sqlite3
 node_modules
 mysite.log
 XDG_CACHE_HOME
@@ -142,3 +142,15 @@ XDG_CACHE_HOME
 # Private uploads and platform artifacts
 media/
 .DS_Store
+
+# Local Hallmark fixture pages, inventories and captures
+.hallmark/screens/
+.hallmark/before-pages/
+.hallmark/before/
+.hallmark/after/
+.hallmark/before.json
+.hallmark/before.txt
+.hallmark/compare.html
+.hallmark/inventories.json
+
+.hallmark/browser/
