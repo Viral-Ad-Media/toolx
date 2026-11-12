@@ -2,10 +2,10 @@
 {% block title %}Article draft{% endblock %}
 {% block workspace %}
 <header class="page-heading"><div><h1>{% if form.instance.pk %}Edit article draft{% else %}Write an article draft{% endif %}</h1><p>A title and a place for your ideas.</p></div><a class="text-link" href="{% url 'paraphrase' %}">My article drafts</a></header>
-<div class="editor-layout"><div class="editor-main"><form method="post" class="form-stack">{% csrf_token %}
+<div class="editor-layout"><aside class="editor-aside"><h2>Make room to revise</h2><p>Save the words you have now. You can reopen your draft and edit it later.</p><p>Changes are saved when you submit this form.</p></aside><div class="editor-main"><form method="post" class="form-stack">{% csrf_token %}
 {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
 {% include 'field.html' with field=form.Title %}
 {% include 'field.html' with field=form.Article %}
 <div class="actions"><button type="submit" class="btn btn-primary" id="signup">Save draft</button><a class="btn btn-secondary" href="{% url 'paraphrase' %}">Cancel</a></div>
-</form></div><aside class="editor-aside"><h2>Make room to revise</h2><p>Save the words you have now. You can reopen your draft and edit it later.</p><p>Changes are saved when you submit this form.</p></aside></div>
+</form></div></div>
 {% endblock %}
