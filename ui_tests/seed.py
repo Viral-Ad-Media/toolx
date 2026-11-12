@@ -16,6 +16,7 @@ for index in range(22):
 client = Client()
 client.force_login(user)
 writer_cookie = client.cookies['sessionid'].value
-client.force_login(empty)
+empty_client = Client()
+empty_client.force_login(empty)
 # Only the local browser runner consumes this output; it is never written to artifacts.
-print(json.dumps({'writer': writer_cookie, 'empty': client.cookies['sessionid'].value, 'letter': letter.pk, 'draft': draft.pk}))
+print(json.dumps({'writer': writer_cookie, 'empty': empty_client.cookies['sessionid'].value, 'letter': letter.pk, 'draft': draft.pk}))

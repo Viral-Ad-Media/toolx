@@ -40,6 +40,7 @@ try {
       await page.setViewport({width, height: 900});
       const response = await page.goto(origin + path, {waitUntil: 'networkidle2'});
       assert.equal(response.status(), 200, `${name}: HTTP failure`);
+      assert.equal(new URL(page.url()).pathname, path, `${name}: unexpected redirect`);
       await page.evaluate(() => document.fonts.ready);
       const metrics = await page.evaluate(() => {
         const outside = [...document.querySelectorAll('main *')].filter(el => {
@@ -61,13 +62,29 @@ try {
     }
   }
   await page.setViewport({width:375,height:900});
+  await page.goto(origin + '/dashboard/', {waitUntil:'networkidle2'});
+  await page.keyboard.press('Tab');
+  assert.equal(await page.evaluate(() => document.activeElement.getAttribute('href')), '#main-content', 'Skip link must be first in keyboard order.');
+  await page.keyboard.press('Enter');
+  assert.equal(await page.evaluate(() => document.activeElement.id), 'main-content', 'Skip link must focus the main content.');
+  await page.focus('.nav-create-menu summary');
+  await page.keyboard.press('Enter');
+  assert(await page.$('.nav-create-menu[open]'), 'Create disclosure must open from the keyboard.');
+  assert(await page.evaluate(() => {
+    const r=document.querySelector('.nav-create-options').getBoundingClientRect();
+    return r.left >= 0 && r.right <= innerWidth;
+  }), 'Open mobile Create controls must remain in the viewport.');
+  await page.screenshot({path:join(output,'create-menu-375.png'),fullPage:true});
+  report.screenshots.push('create-menu-375.png');
+  await page.emulateMediaFeatures([{name:'prefers-reduced-motion',value:'reduce'}]);
+  assert.equal(await page.evaluate(() => getComputedStyle(document.querySelector('.btn')).transitionDuration), '0s');
   await page.goto(origin + '/login/');
   await page.type('#id_username', 'unknown');
   await page.type('#id_password', 'incorrect');
-  await Promise.all([page.waitForNavigation(), page.click('button[type="submit"]')]);
+  await Promise.all([page.waitForNavigation(), page.click('.auth-panel button[type="submit"]')]);
   assert(await page.$('[role="alert"]'), 'Invalid login must show an error.');
-  await page.keyboard.press('Tab');
-  await page.emulateMediaFeatures([{name:'prefers-reduced-motion',value:'reduce'}]);
+  await page.screenshot({path:join(output,'login-error-375.png'),fullPage:true});
+  report.screenshots.push('login-error-375.png');
   assert.equal(report.errors.length, 0, 'Browser script errors');
   console.log(`${report.checks.length} responsive checks passed; 28 WCAG audits passed; screenshots saved.`);
 } finally {
