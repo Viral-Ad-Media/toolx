@@ -29,7 +29,7 @@ button, input, textarea, select { font: inherit; }
 .site-nav { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-lg); min-height: 80px; padding-block: var(--space-md); }
 .brand { display: flex; align-items: center; min-height: 44px; color: var(--color-nav-ink); text-decoration: none; font-size: var(--text-xl); font-weight: 700; letter-spacing: -.03em; }
 .brand:hover { color: var(--color-nav-ink); }
-.brand img { width: 88px; height: auto; }
+.brand img { width: 160px; height: auto; }
 .nav-links { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-xs); margin-left: auto; }
 .site-nav a:not(.brand) { color: var(--color-nav-ink); min-height: 44px; display: inline-flex; align-items: center; padding: var(--space-xs) var(--space-sm); text-decoration: none; border-radius: var(--radius-control); }
 .site-nav a:hover:not(.brand), .site-nav a[aria-current='page'] { background: var(--color-nav-selected); }

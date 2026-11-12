@@ -1,7 +1,7 @@
 {% load static %}
 <header class="site-header">
   <nav class="site-nav container" aria-label="{% if user.is_authenticated %}Workspace{% else %}Main{% endif %} navigation">
-    <a class="brand" href="{% url 'index' %}" aria-label="ToolX home"><img src="{% static 'img/logo.png' %}" alt="ToolX" width="88" height="40"></a>
+    <a class="brand" href="{% url 'index' %}" aria-label="ToolX home"><img src="{% static 'img/logo.png' %}" alt="ToolX" width="160" height="40"></a>
     <div class="nav-links">
       {% if user.is_authenticated %}
         {% include 'icon-bar.html' %}
