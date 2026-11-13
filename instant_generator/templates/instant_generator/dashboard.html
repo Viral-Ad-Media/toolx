@@ -1,59 +1,16 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %} Dashboard {% endblock %}
-{% block content %}
-
-
-<div class="row" >
-    <div class="col sticky-top side-nav d-none d-lg-block">
-        <a href="/">
-          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
-        </a>
-        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
-    </div>
-
-    <div class="col-10 my-auto">
-         <h3> Welcome {{ user.username }}</h3>
-         <div class="mt-5 ml-4">
-            <h4 >All Adcopies </h4>
-            <a href="/my_adcopies"><p class="float-right">View all</p></a>
-
-             <div class="row mt-3">
-                {% for adcopy in adcopies %}
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
-                        <div class="my_adcopies card p-3 clearfix">
-                            <h5>{{ adcopy.Get_Attention}}</h5>
-                            <p> {{ adcopy.created_on.date }}</p>
-
-                            <div class="btn-group">
-                                 <a href="{% url 'preview' adcopy.pk%}"><button class="card-xbtn btn-primary btn-md center-block">Preview</button></a>
-                                 <a href="{% url 'pdf' adcopy.pk%}" target="_blank"><button class="card-xbtn btn-primary btn-md center-block">Pdf</button></a>
-                                 <a href="{% url 'docx' adcopy.pk%}" target="_blank"><button class="card-xbtn btn-primary btn-md center-block">Docx</button></a>
-                             </div>
-
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-         </div>
-
-         <div class="mt-5 ml-4">
-            <h4>Recent Article Drafts </h4>
-            <a href="/paraphrase"><p class="float-right">View all</p></a>
-            <div class="row mt-3    ">
-                {% for  paraphrase in  my_paraphrase %}
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
-                        <div class="my_adcopies card p-3 clearfix">
-                            <a href="{% url 'paraphrase_preview' paraphrase.pk%}">
-                                <h5>{{ paraphrase.Title}}</h5>
-                            </a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-         </div>
-    </div>
-</div>
-
+{% extends "app_base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block workspace %}
+<header class="page-heading">
+  <div><h1>Your writing workspace</h1><p>Welcome, {{ user.username }}. Pick up where you left off.</p></div>
+  <div class="actions"><a class="btn btn-primary" href="{% url 'create' %}">New sales letter</a><a class="btn btn-secondary" href="{% url 'create_paraphrase' %}">New article draft</a></div>
+</header>
+<section class="workspace-section" aria-labelledby="recent-letters">
+  <div class="section-heading"><h2 id="recent-letters">Recent sales letters</h2><a class="text-link" href="{% url 'my_adcopies' %}">View all sales letters</a></div>
+  <div class="document-list">{% for adcopy in adcopies %}{% include 'instant_generator/letter_row.html' with dashboard=True %}{% empty %}<div class="empty-state"><h3>Your first sales letter starts here</h3><p>Work through twelve prompts, then save your letter for preview and export.</p><a class="btn btn-secondary" href="{% url 'create' %}">Write a sales letter</a></div>{% endfor %}</div>
+</section>
+<section class="workspace-section" aria-labelledby="recent-drafts">
+  <div class="section-heading"><h2 id="recent-drafts">Recent article drafts</h2><a class="text-link" href="{% url 'paraphrase' %}">View all article drafts</a></div>
+  <div class="document-list">{% for paraphrase in my_paraphrase %}{% include 'instant_generator/draft_row.html' with dashboard=True %}{% empty %}<div class="empty-state"><h3>Give your next idea a home</h3><p>Save an article draft and return to revise it later.</p><a class="btn btn-secondary" href="{% url 'create_paraphrase' %}">Write an article draft</a></div>{% endfor %}</div>
+</section>
 {% endblock %}

@@ -15,6 +15,7 @@ class ProductionConfigurationTests(SimpleTestCase):
                'EMAIL_HOST': 'smtp.example.com', 'EMAIL_USE_TLS': 'True', 'EMAIL_USE_SSL': 'False',
                'ADMIN_EMAIL': 'noreply@toolx.example.com', 'AWS_STORAGE_BUCKET_NAME': 'test-only',
                'AWS_S3_REGION_NAME': 'us-east-1', **overrides}
+        env = {key: value for key, value in env.items() if value is not None}
         return subprocess.run([sys.executable, '-c', 'import toolx.settings'], env=env, capture_output=True, text=True)
 
     def test_exact_origin_and_hosts_are_accepted(self):
@@ -35,3 +36,15 @@ class ProductionConfigurationTests(SimpleTestCase):
             result = self.check_settings(PUBLIC_ORIGIN='https://toolx.example.com:' + port)
             self.assertNotEqual(result.returncode, 0)
             self.assertIn('invalid port', result.stderr)
+
+    def test_render_injected_origin_and_hostname_are_supported(self):
+        result = self.check_settings(ALLOWED_HOSTS=None, PUBLIC_ORIGIN=None,
+                                     RENDER_EXTERNAL_HOSTNAME='toolx-example.onrender.com',
+                                     RENDER_EXTERNAL_URL='https://toolx-example.onrender.com')
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_missing_host_still_fails_without_render_metadata(self):
+        result = self.check_settings(ALLOWED_HOSTS=None, PUBLIC_ORIGIN=None,
+                                     RENDER_EXTERNAL_HOSTNAME='', RENDER_EXTERNAL_URL='')
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('exact deployment hostnames', result.stderr)

@@ -1,0 +1,28 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "app",
+  "shape": "app screen",
+  "theme": "brand",
+  "axes": "light/grotesk-sans/warm",
+  "hero": "existing marketing content",
+  "nav": "labeled top navigation with native Create disclosure",
+  "footer": "quiet existing destinations",
+  "imagery": "existing brand assets",
+  "photos": [],
+  "entry": "writing workspace",
+  "fingerprint": "ToolX twelve-prompt editor",
+  "sections": [
+   "workspace",
+   "editors",
+   "histories",
+   "previews",
+   "account"
+  ],
+  "signature": "twelve-prompt writing workspace",
+  "waived": [],
+  "prompt": "Audit and improve ToolX UI/UX using Hallmark",
+  "date": "2026-11-12"
+ }
+]

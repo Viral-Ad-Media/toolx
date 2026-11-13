@@ -1,0 +1,26 @@
+{
+  "scanned": "2026-11-11",
+  "findings": {
+    "fonts": "Lato (templates/base.html)",
+    "palette": "Coral #F37753, navy #242732, warm white #FEF8F5 (static/css/toolx.css before redesign)",
+    "framework": "Django templates and Bootstrap 4 CDN utilities",
+    "motion": "transition: all on icon navigation; no reduced-motion policy",
+    "navigation": "desktop-only unlabeled icon bar"
+  },
+  "preserve": [
+    "brand palette family",
+    "Lato",
+    "all routes and named fields",
+    "CSRF POST and profile uploads",
+    "real product content"
+  ],
+  "introduce": [
+    "role-based tokens",
+    "accessible darker coral for functional controls",
+    "responsive labeled navigation",
+    "shared form error/help rendering",
+    "empty states",
+    "browser CI evidence"
+  ],
+  "hallmark_commit": "04977e15f3dfd6ee4b74c887dac3eb52665d6c92"
+}

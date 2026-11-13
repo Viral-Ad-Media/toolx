@@ -2,12 +2,13 @@
 {% block title %}Account access{% endblock %}
 {% block content %}
 {% include 'nav.html' %}
-<main class="container py-5 text-center">
+<main class="container access-layout" id="main-content" tabindex="-1">
   <h1>Account access</h1>
   <p>Create an account to write sales letters and save article drafts.</p>
   <p>Tool-X currently has no paid plans or checkout.</p>
-  <a class="btn btn-primary" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'signup' %}{% endif %}">Get started</a>
-  <a class="btn btn-outline-primary" href="{% url 'features' %}">View features</a>
+  <div class="actions">
+    <a class="btn btn-primary" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'signup' %}{% endif %}">Get started</a>
+    <a class="btn btn-secondary" href="{% url 'features' %}">View features</a>
+  </div>
 </main>
-{% include 'footer.html' %}
 {% endblock %}

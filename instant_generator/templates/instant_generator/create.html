@@ -1,65 +1,25 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %} Create {% endblock %}
-{% block content %}
-
-
-<div class="row" >
-    <div class="col sticky-top side-nav d-none d-lg-block">
-        <a href="/">
-          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
-        </a>
-        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
-    </div>
-
-    <div class="col-7 mt-5 pl-5">
-        <h5 class="pt-5"><b>Fill out the boxes below to generate your Adcopies/Sales letter</b></h5>
-         <form method="post">
-            {% csrf_token %}
-            <div class="pt-5">
-                {{ form.Get_Attention|as_crispy_field }}
-            </div>
-            <div class="pt-5">
-                {{ form.Identify_the_Problem_Your_Audience_Have|as_crispy_field }}
-            </div>
-            <div class="pt-5">
-                {{ form.Provide_the_Solution|as_crispy_field }}
-            </div>
-            <div class="pt-5">
-                {{ form.Present_your_Credentials|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Show_the_Benefits|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Give_Social_Proof|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Make_Your_Offer|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Give_a_Guarantee|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Inject_Scarcity|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Call_to_action|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Give_a_Warning|as_crispy_field}}
-            </div>
-            <div class="pt-5">
-                {{ form.Close_with_a_Reminder|as_crispy_field}}
-            </div>
-            <div class="pt-5 pb-5">
-                <button type="submit" class="xbtn-primary btn btn-primary btn-block" id="signup">Submit</button>
-            </div>
-         </form>
-    </div>
-
-
-</div>
-
+{% extends "app_base.html" %}
+{% block title %}New sales letter{% endblock %}
+{% block workspace %}
+<header class="page-heading"><div><h1>Write a sales letter</h1><p>Work through twelve prompts to shape your message.</p></div><a class="text-link" href="{% url 'my_adcopies' %}">My sales letters</a></header>
+<div class="editor-layout"><aside class="editor-aside"><h2>Start with your reader</h2><p>Use your own words to explain the problem, the offer, and what to do next.</p><p>Your letter is saved when you submit this form. You can then preview it or download PDF and DOCX copies.</p></aside><div class="editor-main"><form method="post" class="form-stack sales-letter-form">{% csrf_token %}
+{% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+<fieldset class="field-group"><legend>Your reader and solution</legend>
+{% include 'field.html' with field=form.Get_Attention %}
+{% include 'field.html' with field=form.Identify_the_Problem_Your_Audience_Have %}
+{% include 'field.html' with field=form.Provide_the_Solution %}
+{% include 'field.html' with field=form.Present_your_Credentials %}
+{% include 'field.html' with field=form.Show_the_Benefits %}
+{% include 'field.html' with field=form.Give_Social_Proof %}
+</fieldset><fieldset class="field-group"><legend>Your offer</legend>
+{% include 'field.html' with field=form.Make_Your_Offer %}
+{% include 'field.html' with field=form.Give_a_Guarantee %}
+{% include 'field.html' with field=form.Inject_Scarcity %}
+</fieldset><fieldset class="field-group"><legend>Your closing</legend>
+{% include 'field.html' with field=form.Call_to_action %}
+{% include 'field.html' with field=form.Give_a_Warning %}
+{% include 'field.html' with field=form.Close_with_a_Reminder %}
+</fieldset>
+<div class="actions"><button type="submit" class="btn btn-primary" id="signup">Save sales letter</button><a class="btn btn-secondary" href="{% url 'my_adcopies' %}">Cancel</a></div>
+</form></div></div>
 {% endblock %}

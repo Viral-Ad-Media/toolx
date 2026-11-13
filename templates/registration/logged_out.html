@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
-
-{% block title %}See you!{% endblock %}
-
+{% block title %}Logged out{% endblock %}
 {% block content %}
-  <h2>Logged out</h2>
-  <p>You have been successfully logged out.</p>
-  <p><a href="{% url 'login' %}">Log in</a> again.</p>
+{% include 'nav.html' %}
+<main class="auth-layout container" id="main-content" tabindex="-1">
+  <section class="auth-intro" aria-labelledby="account-heading">
+    <h1 id="account-heading">See you next time.</h1>
+    <p>Your session has ended.</p>
+  </section>
+  <section class="auth-panel" aria-label="Logged out">
+    <div class="status-copy">
+      <p>You have been successfully logged out.</p>
+      <a class="btn btn-primary" href="{% url 'login' %}">Log in again</a>
+    </div>
+  </section>
+</main>
 {% endblock %}

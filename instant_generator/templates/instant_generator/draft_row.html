@@ -1,0 +1,4 @@
+<div class="document-row">
+  <div>{% if dashboard %}<h3>{% else %}<h2>{% endif %}<a class="document-title" href="{% url 'paraphrase_preview' paraphrase.pk %}">{{ paraphrase.Title }}</a>{% if dashboard %}</h3>{% else %}</h2>{% endif %}<p class="document-meta">Created <time datetime="{{ paraphrase.created_on|date:'Y-m-d' }}">{{ paraphrase.created_on|date:"j M Y" }}</time></p></div>
+  <div class="actions"><a class="btn btn-secondary" href="{% url 'edit_draft' paraphrase.pk %}">Edit draft<span class="visually-hidden"> {{ paraphrase.Title }}</span></a></div>
+</div>

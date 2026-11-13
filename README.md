@@ -52,6 +52,20 @@ Back up an existing database, install the locked dependencies, run `python manag
 
 Production uploads and real SMTP delivery need end-to-end verification with your actual credentials. No ToolX service was found in the inspected Render workspace; this patch does not provision or deploy one.
 
+## Render and Neon setup
+
+The Render service uses Neon PostgreSQL for data and a private Neon S3-compatible bucket for avatars. `DATABASE_URL` is pooled for normal traffic; `DATABASE_URL_UNPOOLED` is direct for migrations. `AWS_S3_ENDPOINT_URL`, the storage keys and region, and `AWS_S3_ADDRESSING_STYLE=path` configure private uploads. Signed file URLs remain enabled.
+
+Render’s documented `RENDER_EXTERNAL_HOSTNAME` and `RENDER_EXTERNAL_URL` provide the initial service hostname/origin when explicit `ALLOWED_HOSTS` and `PUBLIC_ORIGIN` are absent. Explicit settings still take precedence and retain their production validation. Set those explicitly when adding a custom domain.
+
+Build: install requirements, collect static files, run deployment checks, then `python manage.py check_external_services`. The last command checks PostgreSQL, private-object access and SMTP authentication without sending mail or logging credentials. Resend SMTP uses STARTTLS on port 2587, avoiding the standard SMTP ports blocked on free Render services.
+
+Start with `sh render-start.sh`. On the single-instance free service it runs migrations using the direct URL, initializes the administrator if opted in, then starts Gunicorn on `0.0.0.0:$PORT`. Paid services can move migration/bootstrap into a pre-deploy command before increasing instance count.
+
+For the first administrator, set `TOOLX_BOOTSTRAP_ADMIN=true` and provide `DJANGO_SUPERUSER_USERNAME`, `DJANGO_SUPERUSER_EMAIL` and `DJANGO_SUPERUSER_PASSWORD` as Render secrets. Bootstrap creates one active superuser with a confirmed profile. It never resets an existing administrator’s password or elevates an existing ordinary account. Disable the bootstrap flag after initialization. Retrieve the initial password in Render, change it after signing in, and never commit it.
+
+ToolX currently authenticates through Django. `SECRET_KEY` is the active Django signing secret. A separate `BETTER_AUTH_SECRET` can be stored for the requested future integration, but it does not enable Better Auth and is not reused as the Django key. A Better Auth migration is separate application work.
+
 ## Public database incident and history cleanup
 
 On 2026-10-05, the histories of `master` and `fix/toolx-audit` were rewritten to remove the previously committed database, private uploads, compiled Python caches, and local editor metadata. Historical Django signing and TinyMCE API keys were redacted. All 50 commits were rebuilt with the same parent relationships; the application files at both branch tips were unchanged by the rewrite. Original authors and author dates are retained in `Original-Author` and `Original-Author-Date` message trailers; native author/committer fields and commit IDs changed during publishing.
@@ -77,6 +91,14 @@ GitHub still retains read-only pull-request references for PRs #1–#8 and may r
 ## Follow-up review
 
 Password-reset screens and completion links render correctly, and reset emails use the configured origin even when requests arrive through another allowed host. Password-change screens use the application navigation and CSRF-protected logout. Public pages describe the implemented features; paid-plan cards, unsupported usage claims, and placeholder legal links have been removed. Signup handles a conflicting username created between validation and saving without exposing a server error.
+
+## Interface and accessibility
+
+The Hallmark-guided redesign preserves ToolX’s coral/navy identity and Lato typography. A labeled navigation bar works on small screens; a native Create disclosure keeps global writing shortcuts available without JavaScript. Dashboard and history pages explain empty states, forms show validation errors and password guidance, and previews preserve line breaks and safe text escaping. No routes, schema, authorization rules, or export behavior changed.
+
+See [the UI audit](docs/ui-ux-audit.md) for findings, design decisions, preserved wiring and verification limits. Shared tokens live in `static/css/tokens.css`; reusable form and workspace markup lives in `templates/field.html` and `templates/app_base.html`.
+
+Browser checks are development tools, separate from the Python application. With Python dependencies, Node 24 and Chrome installed, run `npm ci`, `python manage.py collectstatic --noinput`, then `npm run test:ui` (`DEBUG=True`). Set `PYTHON_BIN` or `CHROME_PATH` if needed. The runner creates a disposable SQLite database and sample accounts, checks 14 screens at six widths, runs WCAG audits on desktop and mobile, and saves screenshots under `.hallmark/browser/`. GitHub Actions uploads that directory as `toolx-ui-browser-evidence`. These checks do not connect to a production database.
 
 ## Verification
 

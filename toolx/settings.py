@@ -31,10 +31,10 @@ if DEBUG and not SECRET_KEY:
     SECRET_KEY = 'local-development-only-never-use-this-secret-in-production'
 if not DEBUG and (len(SECRET_KEY) < 50 or len(set(SECRET_KEY)) < 5 or SECRET_KEY.startswith(('insecure-', 'local-development-', 'django-insecure-'))):
     raise ImproperlyConfigured('Set a strong SECRET_KEY of at least 50 characters for production.')
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1' if DEBUG else '', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=config('RENDER_EXTERNAL_HOSTNAME', default='localhost,127.0.0.1' if DEBUG else ''), cast=Csv())
 if not DEBUG and (not ALLOWED_HOSTS or any(host.startswith('.') or '*' in host or '/' in host or ':' in host or any(char.isspace() for char in host) for host in ALLOWED_HOSTS)):
     raise ImproperlyConfigured('Set ALLOWED_HOSTS to the exact deployment hostnames.')
-PUBLIC_ORIGIN = config('PUBLIC_ORIGIN', default='http://localhost:8000' if DEBUG else '').rstrip('/')
+PUBLIC_ORIGIN = config('PUBLIC_ORIGIN', default=config('RENDER_EXTERNAL_URL', default='http://localhost:8000' if DEBUG else '')).rstrip('/')
 origin = urlparse(PUBLIC_ORIGIN)
 if origin.scheme not in ('http', 'https') or not origin.hostname or origin.path or origin.query or origin.fragment or origin.username or origin.password or (not DEBUG and origin.scheme != 'https'):
     raise ImproperlyConfigured('PUBLIC_ORIGIN must be the HTTPS origin of your production site.')
@@ -191,6 +191,8 @@ if not DEBUG:
     AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID', default=None)
     AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY', default=None)
     AWS_S3_ENDPOINT_URL = config('AWS_S3_ENDPOINT_URL', default=None)
+    AWS_S3_ADDRESSING_STYLE = config('AWS_S3_ADDRESSING_STYLE', default=None)
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
     AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = True
     AWS_S3_FILE_OVERWRITE = False

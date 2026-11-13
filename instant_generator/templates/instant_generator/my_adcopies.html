@@ -1,44 +1,7 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %} My Adcopies
-{% endblock %}
-{% block content %}
-
-
-
-
-<div class="row" >
-    <div class="col sticky-top side-nav d-none d-lg-block">
-        <a href="/">
-          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
-        </a>
-        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
-    </div>
-
-    <div class="col-10 mt-5 ml-4">
-        <h4>My Adcopies </h4>
-
-            <div class="row mt-5">
-                {% for adcopy in adcopies %}
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
-                        <div class="my_adcopies card p-3 clearfix">
-                            <h5>{{ adcopy.Get_Attention}}</h5>
-                            <p> {{ adcopy.created_on.date }}</p>
-
-                            <div class="btn-group">
-                                 <a href="{% url 'preview' adcopy.pk%}"><button class="card-xbtn btn-primary btn-md center-block">Preview</button></a>
-                                 <a href="{% url 'pdf' adcopy.pk%}" target="_blank"><button class="card-xbtn btn-primary btn-md center-block">Pdf</button></a>
-                                 <a href="{% url 'docx' adcopy.pk%}" target="_blank"><button class="card-xbtn btn-primary btn-md center-block">Docx</button></a>
-                             </div>
-
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-    </div>
-</div>
-
+{% extends "app_base.html" %}
+{% block title %}My sales letters{% endblock %}
+{% block workspace %}
+<header class="page-heading"><div><h1>My sales letters</h1><p>Preview your saved letters or download a copy.</p></div><a class="btn btn-primary" href="{% url 'create' %}">New sales letter</a></header>
+<div class="document-list">{% for adcopy in adcopies %}{% include 'instant_generator/letter_row.html' %}{% empty %}<div class="empty-state"><h2>No sales letters yet</h2><p>Start with twelve writing prompts to build your first letter.</p><a class="btn btn-primary" href="{% url 'create' %}">Write a sales letter</a></div>{% endfor %}</div>
 {% include 'pagination.html' with page=adcopies %}
 {% endblock %}

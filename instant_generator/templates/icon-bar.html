@@ -1,18 +1,12 @@
-
-
-{% load static %}
-{% block icon-bar %}
-
-<!-- Add icon library -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<div class="icon-bar pt-5">
-  <a href="/dashboard"><i class="fa fa-th-large"></i></a>
-  <a href="/create"><i class="fa fa-sticky-note"></i></a>
-  <a href="/create_paraphrase"><i class="fa fa-retweet"></i></a>
-  <!--  <a class="active" href="/"><i class="fa fa-plus"></i></a>-->
-  <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button class="btn btn-link" type="submit">Logout</button></form>
-  <a  href="/profile"><img class="rounded-circle" src="{% if user.profile.avatar %}{{ user.profile.avatar.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" alt="" style="max-width: 3rem; max-height: 3rem; border: 3px solid #ED4D47;"></a>
-</div>
-
-{% endblock icon-bar %}
+<a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+<a href="{% url 'my_adcopies' %}" {% if request.resolver_match.url_name == 'my_adcopies' or request.resolver_match.url_name == 'create' or request.resolver_match.url_name == 'preview' %}aria-current="page"{% endif %}>Sales letters</a>
+<a href="{% url 'paraphrase' %}" {% if request.resolver_match.url_name == 'paraphrase' or request.resolver_match.url_name == 'create_paraphrase' or request.resolver_match.url_name == 'edit_draft' or request.resolver_match.url_name == 'paraphrase_preview' %}aria-current="page"{% endif %}>Article drafts</a>
+<a href="{% url 'profile' %}" {% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'edit-profile' %}aria-current="page"{% endif %}>Profile</a>
+<details class="nav-create-menu">
+  <summary>Create</summary>
+  <div class="nav-create-options">
+    <a href="{% url 'create' %}">New sales letter</a>
+    <a href="{% url 'create_paraphrase' %}">New article draft</a>
+  </div>
+</details>
+<form action="{% url 'logout' %}" method="post">{% csrf_token %}<button type="submit">Log out</button></form>

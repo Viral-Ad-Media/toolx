@@ -1,36 +1,7 @@
-{% extends "base.html" %}
-{% load static %}
-{% load crispy_forms_tags %}
-{% block title %} Article Draft {% endblock %}
-{% block content %}
-
-
-<div class="row" >
-    <div class="col sticky-top side-nav d-none d-lg-block">
-        <a href="/">
-          <img src="{% static 'img/alt-logo.png' %}" alt="logo" class="img-responsive">
-        </a>
-        {% block icon-bar %} {% include 'icon-bar.html' %} {% endblock icon-bar %}
-    </div>
-
-    <div class="col-10 mt-5 ml-4">
-        <h4> My Article Draft </h4>
-
-            <div class="row mt-5">
-                {% for  paraphrase in  my_paraphrase %}
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 mt-3">
-                        <div class="my_adcopies card p-3 clearfix">
-                            <a href="{% url 'paraphrase_preview' paraphrase.pk%}">
-                                <h5>{{ paraphrase.Title}}</h5>
-                            </a>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-
-    </div>
-
-
-</div>
+{% extends "app_base.html" %}
+{% block title %}My article drafts{% endblock %}
+{% block workspace %}
+<header class="page-heading"><div><h1>My article drafts</h1><p>Your ideas, saved and ready to revise.</p></div><a class="btn btn-primary" href="{% url 'create_paraphrase' %}">New article draft</a></header>
+<div class="document-list">{% for paraphrase in my_paraphrase %}{% include 'instant_generator/draft_row.html' %}{% empty %}<div class="empty-state"><h2>No article drafts yet</h2><p>Save a title and your text, then edit whenever you are ready.</p><a class="btn btn-primary" href="{% url 'create_paraphrase' %}">Write an article draft</a></div>{% endfor %}</div>
 {% include 'pagination.html' with page=my_paraphrase %}
 {% endblock %}

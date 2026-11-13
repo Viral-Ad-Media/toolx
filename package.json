@@ -1,0 +1,7 @@
+{
+  "name": "toolx-ui-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {"test:ui": "node ui_tests/browser.mjs"},
+  "devDependencies": {"@axe-core/puppeteer": "4.14.0", "puppeteer-core": "25.17.0"}
+}

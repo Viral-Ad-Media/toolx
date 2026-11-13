@@ -1,0 +1,36 @@
+:root {
+  --color-paper: #fef8f5;
+  --color-paper-2: #f6ece6;
+  --color-paper-3: #eddcd1;
+  --color-surface: #fffdfb;
+  --color-ink: #242732;
+  --color-ink-2: #3d4352;
+  --color-muted: #64616a;
+  --color-rule: #d6c9c2;
+  --color-field-edge: #8c7b72;
+  --color-accent: #a93f28;
+  --color-accent-hover: #86331f;
+  --color-accent-ink: #fff8f4;
+  --color-focus: #96351f;
+  --color-nav: #242732;
+  --color-nav-ink: #fef8f5;
+  --color-nav-muted: #c7c5ce;
+  --color-nav-selected: #3d4352;
+  --color-error: #a12626;
+  --color-error-paper: #fff0ed;
+  --color-success: #275739;
+  --color-success-paper: #eaf3e9;
+  --color-transparent: transparent;
+  --font-body: 'Lato', Arial, sans-serif;
+  --font-display: var(--font-body);
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px;
+  --space-sm: 12px; --space-md: 16px; --space-lg: 24px;
+  --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px;
+  --text-sm: .875rem; --text-md: 1rem; --text-lg: 1.2rem;
+  --text-xl: 1.44rem; --text-2xl: 1.728rem; --text-3xl: 2.074rem;
+  --text-hero: 3.25rem; --text-display: 1.728rem; --text-section: 1.44rem;
+  --container: 1184px; --gutter: 32px;
+  --field-writing-height: 10rem;
+  --radius-control: 6px; --radius-panel: 12px;
+  --dur-micro: 120ms; --ease-out: cubic-bezier(.16,1,.3,1);
+}

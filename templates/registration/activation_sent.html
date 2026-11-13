@@ -1,8 +1,18 @@
 {% extends 'base.html' %}
 {% block title %}Activation email{% endblock %}
 {% block content %}
-<div class="container p-5 text-center"><h2>Check your email</h2>
-<p>If an eligible registration exists, an activation email has been sent. Check your spam folder too.</p>
-<p><a href="{% url 'activation_resend' %}">Resend activation email</a></p>
-<a class="btn btn-primary" href="{% url 'login' %}">Log in</a></div>
+{% include 'nav.html' %}
+<main class="auth-layout container" id="main-content" tabindex="-1">
+  <section class="auth-intro" aria-labelledby="account-heading">
+    <h1 id="account-heading">Check your email.</h1>
+    <p>Confirm your email address to activate your account.</p>
+  </section>
+  <section class="auth-panel" aria-label="Activation email">
+    <div class="status-copy">
+      <p>If an eligible registration exists, an activation email has been sent. Check your spam folder too.</p>
+      <a class="btn btn-primary" href="{% url 'login' %}">Log in</a>
+      <a class="text-link" href="{% url 'activation_resend' %}">Resend activation email</a>
+    </div>
+  </section>
+</main>
 {% endblock %}

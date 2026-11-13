@@ -1,8 +1,10 @@
-<footer class="container py-4">
-  <nav aria-label="Footer">
-    <a href="{% url 'index' %}">Home</a> ·
-    <a href="{% url 'features' %}">Features</a> ·
-    <a href="{% url 'pricing' %}">Account access</a>
-  </nav>
-  <p class="mt-3">© {% now 'Y' %} Tool-X · <a href="https://www.viraladmedia.com/">Viral Ad Media</a></p>
+<footer class="site-footer">
+  <div class="container">
+    <nav aria-label="Footer">
+      <a href="{% url 'index' %}">Home</a>
+      <a href="{% url 'features' %}">Features</a>
+      <a href="{% url 'pricing' %}">Account access</a>
+    </nav>
+    <p>© {% now 'Y' %} ToolX<br><a href="https://www.viraladmedia.com/">Viral Ad Media</a></p>
+  </div>
 </footer>
